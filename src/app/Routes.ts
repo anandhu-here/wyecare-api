@@ -6,7 +6,7 @@ import type { Application } from "express";
 import LocalConfig from "../configs/LocalConfig";
 import Logger from "../logger";
 import AuthRouter from "../modules/auth/Router";
-import ShiftTypeRouter from "src/modules/shifts/Route";
+import ShiftTypeRouter from "src/modules/shiftsType/Route";
 
 class Routes {
   /**
