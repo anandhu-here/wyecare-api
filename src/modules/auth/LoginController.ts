@@ -306,6 +306,7 @@ class LoginController {
       const resData = {
         token: authToken.token,
         expiresAt: authToken.expiresAt,
+        user: user,
       };
 
       Logger.info("Login End");

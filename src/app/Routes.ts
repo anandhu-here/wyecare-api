@@ -7,6 +7,7 @@ import LocalConfig from "../configs/LocalConfig";
 import Logger from "../logger";
 import AuthRouter from "../modules/auth/Router";
 import ShiftTypeRouter from "src/modules/shiftsType/Route";
+import ShiftRouter from "src/modules/shift/Route";
 
 class Routes {
   /**
@@ -22,6 +23,7 @@ class Routes {
     // Mounting Routes
     _express.use(`/${apiPrefix}/auth`, AuthRouter);
     _express.use(`/${apiPrefix}/shifttype`, ShiftTypeRouter);
+    _express.use(`/${apiPrefix}/shift`, ShiftRouter);
     // _express.use(`/${apiPrefix}/job`, JobRouter);
 
     return _express;

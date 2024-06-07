@@ -16,7 +16,7 @@ const ShiftTypeSchema = new Schema({
   },
 });
 
-const UserShiftTypeSchema = new Schema<IUserShiftTypeModel>(
+const ShiftTypeModel = new Schema<IUserShiftTypeModel>(
   {
     userId: {
       type: Types.ObjectId,
@@ -28,9 +28,6 @@ const UserShiftTypeSchema = new Schema<IUserShiftTypeModel>(
   { timestamps: true }
 );
 
-const UserShiftType = model<IUserShiftTypeModel>(
-  "UserShift",
-  UserShiftTypeSchema
-);
+const ShiftType = model<IUserShiftTypeModel>("ShiftType", ShiftTypeModel);
 
-export default UserShiftType;
+export default ShiftType;

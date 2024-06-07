@@ -1,45 +1,30 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
 
-export interface IShiftModel extends IShift {}
-
-const ShiftSchema: Schema = new Schema(
+const ShiftSchema: Schema = new Schema<IShift>(
   {
     agentId: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "User",
       required: true,
     },
     homeId: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "User",
       required: true,
     },
-    assignedUserId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    shiftType: {
-      type: Schema.Types.ObjectId,
-      ref: "ShiftType",
-      required: true,
-    },
-    startTime: {
-      type: Date,
-      required: true,
-    },
-    endTime: {
-      type: Date,
-      required: true,
+    isAccepted: {
+      type: Boolean,
+      default: false,
     },
     isCompleted: {
       type: Boolean,
       default: false,
     },
-    isAccepted: {
-      type: Boolean,
-      default: false,
+    shiftType: {
+      type: Types.ObjectId,
+      ref: "ShiftType", // Make sure this matches the model name exactly
+      required: true,
     },
   },
   {
@@ -47,6 +32,6 @@ const ShiftSchema: Schema = new Schema(
   }
 );
 
-const ShiftModel = model<IShiftModel>("Shift", ShiftSchema);
+const ShiftModel = model<IShift>("Shift", ShiftSchema);
 
 export default ShiftModel;

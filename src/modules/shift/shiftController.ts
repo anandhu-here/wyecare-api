@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import StatusCodes from "src/constants/statusCodes";
 import StringValues from "src/constants/strings";
-import type { IShift } from "src/interfaces/entities/shift";
+import type { IRequest } from "src/interfaces/core/express";
 import ShiftService from "src/services/ShiftService";
 import UserService from "src/services/UserService";
+import { Types, type ObjectId } from "mongoose";
+import type { IShift } from "src/interfaces/entities/shift";
 
 class ShiftController {
   private readonly _shiftSvc: ShiftService;
@@ -14,17 +16,56 @@ class ShiftController {
     this._userSvc = new UserService();
   }
 
-  public createShift = async (req: Request, res: Response): Promise<any> => {
+  public getShiftById = async (req: IRequest, res: Response): Promise<void> => {
     try {
-      const shiftData: IShift = req.body;
-      //   const assignedUser = await this._userSvc.findUserByIdExc()
-      //   if (!assignedUser) {
-      //     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Assigned user not found' });
-      //   }
+      const { shiftId } = req.params;
+      const shift = await this._shiftSvc.getShiftById(shiftId);
+      res.status(StatusCodes.OK).json(shift);
+    } catch (error) {
+      console.error("Error getting shift by id:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
 
-      //   if (assignedUser.accountType === 'home' || assignedUser.accountType === 'agent') {
-      //     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Cannot assign shift to home or agent' });
-      //   }
+  public getShifts = async (req: IRequest, res: Response): Promise<void> => {
+    try {
+      const currentUser = req.currentUser;
+
+      let shifts: IShift[] = [];
+
+      if (currentUser.accountType === "agency") {
+        shifts = await this._shiftSvc.getPublishedShifts(
+          currentUser._id as string
+        );
+        console.log(shifts, "shifts");
+      } else {
+        shifts = await this._shiftSvc.getShifts(currentUser._id as string);
+      }
+
+      res.status(StatusCodes.OK).json(shifts);
+    } catch (error) {
+      console.error("Error getting shifts:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+
+  public createShift = async (req: IRequest, res: Response): Promise<void> => {
+    try {
+      let shiftData: IShift = req.body;
+      const currentUser = req.currentUser;
+
+      if (currentUser.accountType !== "home") {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Cannot create shift" });
+        return;
+      }
+
+      shiftData.homeId = currentUser._id as ObjectId;
 
       const createdShift = await this._shiftSvc.createShift(shiftData);
       res.status(StatusCodes.CREATED).json(createdShift);
@@ -36,7 +77,7 @@ class ShiftController {
     }
   };
 
-  public deleteShift = async (req: Request, res: Response): Promise<any> => {
+  public deleteShift = async (req: IRequest, res: Response): Promise<void> => {
     try {
       const { shiftId } = req.params;
       await this._shiftSvc.deleteShift(shiftId);
@@ -49,10 +90,10 @@ class ShiftController {
     }
   };
 
-  public updateShift = async (req: Request, res: Response): Promise<any> => {
+  public updateShift = async (req: IRequest, res: Response): Promise<void> => {
     try {
       const { shiftId } = req.params;
-      const updatedShiftData: IShift = req.body;
+      const updatedShiftData: Partial<IShift> = req.body;
       const updatedShift = await this._shiftSvc.updateShift(
         shiftId,
         updatedShiftData

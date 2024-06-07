@@ -1,15 +1,11 @@
-import type { Document } from "mongoose";
-import type { IShiftType } from "./shift-types";
+import { Document, ObjectId } from "mongoose";
 
 export interface IShift extends Document {
-  agentId: string;
-  homeId: string;
-  assignedUserId: string;
-  shiftType: IShiftType;
-  startTime: Date;
-  endTime: Date;
-  isCompleted: boolean;
+  agentId: ObjectId;
+  homeId: ObjectId;
   isAccepted: boolean;
+  isCompleted: boolean;
+  shiftType: ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }
