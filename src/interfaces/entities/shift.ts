@@ -1,4 +1,4 @@
-import { Document, ObjectId } from "mongoose";
+import { Document, ObjectId, type Types } from "mongoose";
 
 export interface IShift extends Document {
   agentId: ObjectId;
@@ -6,6 +6,8 @@ export interface IShift extends Document {
   isAccepted: boolean;
   isCompleted: boolean;
   shiftType: ObjectId;
+  count: number;
+  assignedUsers: Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
 }

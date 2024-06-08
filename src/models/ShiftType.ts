@@ -1,7 +1,7 @@
 import { Schema, Types, model } from "mongoose";
 import type { IUserShiftTypeModel } from "src/interfaces/entities/shift-types";
 
-const ShiftTypeSchema = new Schema({
+export const ShiftTypeSchema = new Schema({
   name: {
     type: String,
     required: true,

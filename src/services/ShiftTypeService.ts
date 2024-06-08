@@ -5,6 +5,7 @@ import type {
 import StringValues from "../constants/strings";
 import Logger from "../logger";
 import UserShiftType from "src/models/ShiftType";
+import type { ObjectId } from "mongoose";
 
 class UserShiftTypeService {
   // Create user shifts
@@ -41,6 +42,19 @@ class UserShiftTypeService {
     } catch (error) {
       Logger.error(
         "UserShiftTypeService: createExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
+  public checkShiftType = async (userId: string): Promise<IUserShiftType> => {
+    try {
+      const userShift = await UserShiftType.findOne({ userId });
+      return userShift;
+    } catch (error) {
+      Logger.error(
+        "UserShiftTypeService: checkShiftType",
         "errorInfo:" + JSON.stringify(error)
       );
       return Promise.reject(error);

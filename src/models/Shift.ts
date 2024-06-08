@@ -1,5 +1,6 @@
 import { model, Schema, Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
+import { ShiftTypeSchema } from "./ShiftType";
 
 const ShiftSchema: Schema = new Schema<IShift>(
   {
@@ -21,9 +22,19 @@ const ShiftSchema: Schema = new Schema<IShift>(
       type: Boolean,
       default: false,
     },
+    count: {
+      type: Number,
+      default: 0,
+    },
+    assignedUsers: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
     shiftType: {
-      type: Types.ObjectId,
-      ref: "ShiftType", // Make sure this matches the model name exactly
+      type: ShiftTypeSchema,
       required: true,
     },
   },

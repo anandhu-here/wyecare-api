@@ -41,9 +41,16 @@ class ShiftService {
     return shifts;
   };
 
-  public createShift = async (shiftData: IShift): Promise<IShift> => {
-    const createdShift = await ShiftModel.create(shiftData);
-    return createdShift;
+  public createShift = async (
+    shiftData: IShift,
+    shiftType
+  ): Promise<IShift> => {
+    console.log("Shift data:", shiftData);
+    const newShift = ShiftModel.create({
+      ...shiftData,
+      shiftType,
+    });
+    return newShift;
   };
 
   public deleteShift = async (
@@ -53,15 +60,55 @@ class ShiftService {
   };
 
   public updateShift = async (
-    shiftId: string | Types.ObjectId,
-    updatedShiftData: Partial<IShift>
+    shiftId: string,
+    updatedShiftData: Partial<IShift>,
+    shiftType: any
   ): Promise<IShift | null> => {
     const updatedShift = await ShiftModel.findByIdAndUpdate(
       shiftId,
-      updatedShiftData,
+      {
+        ...updatedShiftData,
+        shiftType,
+      },
       { new: true }
-    );
+    ).exec();
+
     return updatedShift;
+  };
+
+  // Assign users
+  public assignUsers = async (
+    shiftId: string,
+    userIds: string[]
+  ): Promise<IShift | null> => {
+    try {
+      const shift = await ShiftModel.findById(shiftId).exec();
+      const existingUserIds = shift.assignedUsers.map((userId) =>
+        userId.toString()
+      );
+      const isDuplicateUser = userIds.some((userId) =>
+        existingUserIds.includes(userId)
+      );
+
+      if (isDuplicateUser) {
+        throw new Error("User is already assigned to this shift");
+      }
+
+      if (!shift) {
+        throw new Error("Shift not found");
+      }
+
+      if (userIds.length > shift.count) {
+        throw new Error("Number of users exceeds the shift count");
+      }
+
+      shift.assignedUsers = userIds.map((userId) => new Types.ObjectId(userId));
+      await shift.save();
+
+      return shift;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   };
 }
 

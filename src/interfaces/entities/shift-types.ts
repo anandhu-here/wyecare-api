@@ -1,6 +1,6 @@
 import type { Document, ObjectId } from "mongoose";
 
-export interface IShiftType {
+export interface IShiftType extends Document {
   name: string;
   startTime: string;
   endTime: string;

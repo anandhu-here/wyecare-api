@@ -37,7 +37,6 @@ ShiftRouter.route("/:shiftId").get(
  * @access private
  */
 ShiftRouter.route("/").post(
-  validateShiftRequest(createShiftSchema),
   AuthMiddleware.isAuthenticatedUser,
   _shiftController.createShift
 );
@@ -62,6 +61,18 @@ ShiftRouter.route("/:shiftId").delete(
 ShiftRouter.route("/:shiftId").put(
   AuthMiddleware.isAuthenticatedUser,
   _shiftController.updateShift
+);
+
+/**
+ * @name ShiftController.assignUsers
+ * @description Assign users to a shift.
+ * @route PUT /api/v1/shifts/:shiftId/assign
+ * @access private
+ */
+
+ShiftRouter.route("/:shiftId/assign").put(
+  AuthMiddleware.isAuthenticatedUser,
+  _shiftController.assignUsers
 );
 
 export default ShiftRouter;
