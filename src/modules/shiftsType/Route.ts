@@ -24,7 +24,7 @@ ShiftTypeRouter.route("/init").post(
   shiftTypeCtlr.createUserShiftsTypes
 );
 
-ShiftTypeRouter.route("/:shiftTypeId/:userId").delete(
+ShiftTypeRouter.route("/:shiftTypeId/one").delete(
   AuthMiddleware.isAuthenticatedUser,
   shiftTypeCtlr.deleteShiftType
 );

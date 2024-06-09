@@ -38,6 +38,8 @@ const UserSchema = new Schema<IUserModel>(
       type: String,
       enum: [
         "carer",
+        "nurse",
+        "senior-carer",
         "agency",
         "home",
         "admin",

@@ -13,16 +13,20 @@ import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
 import { EHttpMethod } from "../../enums";
 import type ShiftService from "src/services/ShiftService";
+import type { IUserShiftType } from "src/interfaces/entities/shift-types";
+import type UserShiftTypeService from "src/services/ShiftTypeService";
 
 class RegisterController {
   private readonly _userSvc: UserService;
   private readonly _profileSvc: ProfileService;
   private readonly _shiftSvc: ShiftService;
+  private readonly _shiftTypeSvc: UserShiftTypeService;
 
   constructor(
     readonly userSvc: UserService,
     readonly profileSvc: ProfileService,
-    readonly shiftSvc: ShiftService
+    readonly shiftSvc: ShiftService,
+    readonly shiftType: UserShiftTypeService
   ) {
     this._userSvc = userSvc;
     this._profileSvc = profileSvc;

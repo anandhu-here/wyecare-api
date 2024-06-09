@@ -55,13 +55,6 @@ class UserShiftController {
         shifttypes: data.shifts,
       };
 
-      console.log(
-        "newUserShiftData",
-        newUserShiftData,
-        "currentUser",
-        currentUser._id as string
-      );
-
       const userShift = await this._userShiftSvc.createExc(newUserShiftData);
 
       return res.status(StatusCodes.CREATED).json({
@@ -140,7 +133,8 @@ class UserShiftController {
     res: IResponse
   ): Promise<any> => {
     try {
-      const { userId, shiftTypeId } = req.params;
+      const { shiftTypeId } = req.params;
+      const userId = req.currentUser._id as string;
       if (!userId) {
         return res
           .status(StatusCodes.BAD_REQUEST)
@@ -157,7 +151,9 @@ class UserShiftController {
         shiftTypeId
       );
       console.log("deletedShiftType", deletedShiftType);
-      res.status(StatusCodes.OK).json({ message: StringValues.SUCCESS });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: StringValues.SUCCESS, data: deletedShiftType });
     } catch (error) {
       console.error("Error deleting shift type:", error);
       res.status(500).json({ message: "Internal server error" });
@@ -215,7 +211,9 @@ class UserShiftController {
         data
       );
       console.log("data", userShift);
-      res.status(StatusCodes.OK).json({ message: StringValues.SUCCESS });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: StringValues.SUCCESS, data: userShift });
     } catch (error) {
       console.error("Error updating shift type:", error);
       res.status(500).json({ message: "Internal server error" });
