@@ -4,6 +4,7 @@ export interface IShift extends Document {
   agentId: ObjectId;
   homeId: ObjectId;
   isAccepted: boolean;
+  isRejected: boolean;
   isCompleted: boolean;
   shiftType: ObjectId;
   count: number;

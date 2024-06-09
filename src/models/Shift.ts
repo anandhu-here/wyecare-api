@@ -7,7 +7,8 @@ const ShiftSchema: Schema = new Schema<IShift>(
     agentId: {
       type: Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
+      default: undefined,
     },
     homeId: {
       type: Types.ObjectId,
@@ -15,6 +16,10 @@ const ShiftSchema: Schema = new Schema<IShift>(
       required: true,
     },
     isAccepted: {
+      type: Boolean,
+      default: false,
+    },
+    isRejected: {
       type: Boolean,
       default: false,
     },

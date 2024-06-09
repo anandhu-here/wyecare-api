@@ -2,7 +2,7 @@ import { Router } from "express";
 import ShiftController from "./shiftController";
 import AuthMiddleware from "src/middlewares/Auth";
 import { validateShiftRequest } from "src/middlewares/shift";
-import { createShiftSchema } from "src/validators/shift";
+import validateAgencyAccept, { createShiftSchema } from "src/validators/shift";
 
 const ShiftRouter: Router = Router();
 const _shiftController = new ShiftController();
@@ -16,6 +16,19 @@ const _shiftController = new ShiftController();
 ShiftRouter.route("/").get(
   AuthMiddleware.isAuthenticatedUser,
   _shiftController.getShifts
+);
+/**
+ * @name ShiftController.getUnAcceptedShifts
+ * @description Get all unaccepted shifts.
+ * @route GET /api/v1/shifts/unaccepted
+ * @access private
+ * @returns {IShift[]}
+ * @throws {Error}
+ */
+
+ShiftRouter.route("/unaccepted").get(
+  AuthMiddleware.isAuthenticatedUser,
+  _shiftController.getUnAcceptedShifts
 );
 
 /**
@@ -73,6 +86,29 @@ ShiftRouter.route("/:shiftId").put(
 ShiftRouter.route("/:shiftId/assign").put(
   AuthMiddleware.isAuthenticatedUser,
   _shiftController.assignUsers
+);
+
+/**
+ * @name ShiftController.acceptShift
+ * @description Accept a shift.
+ * @route PUT /api/v1/shifts/:shiftId/accept
+ * @access private
+ */
+ShiftRouter.route("/:shiftId/accept").put(
+  AuthMiddleware.isAuthenticatedUser,
+  validateAgencyAccept,
+  _shiftController.acceptShift
+);
+
+/**
+ * @name ShiftController.rejectShift
+ * @description Reject a shift.
+ * @route PUT /api/v1/shifts/:shiftId/reject
+ * @access private
+ */
+ShiftRouter.route("/:shiftId/reject").put(
+  AuthMiddleware.isAuthenticatedUser,
+  _shiftController.rejectShift
 );
 
 export default ShiftRouter;

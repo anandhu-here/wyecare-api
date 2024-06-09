@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import StatusCodes from "src/constants/statusCodes";
 import StringValues from "src/constants/strings";
-import type { IRequest } from "src/interfaces/core/express";
+import type { IRequest, IResponse } from "src/interfaces/core/express";
 import ShiftService from "src/services/ShiftService";
 import UserService from "src/services/UserService";
 import { Types, type ObjectId } from "mongoose";
@@ -46,6 +46,34 @@ class ShiftController {
       } else {
         shifts = await this._shiftSvc.getShifts(currentUser._id as string);
       }
+
+      res.status(StatusCodes.OK).json(shifts);
+    } catch (error) {
+      console.error("Error getting shifts:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+  public getUnAcceptedShifts = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<void> => {
+    try {
+      const currentUser = req.currentUser;
+
+      let shifts: IShift[] = [];
+
+      if (currentUser.accountType !== "home") {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Cannot get unaccepted shifts" });
+        return;
+      }
+
+      shifts = await this._shiftSvc.getunAcceptedShifts(
+        currentUser._id as string
+      );
 
       res.status(StatusCodes.OK).json(shifts);
     } catch (error) {
@@ -172,6 +200,58 @@ class ShiftController {
       res.status(StatusCodes.OK).json(updatedShift);
     } catch (error) {
       console.error("Error updating shift:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+
+  public acceptShift = async (req: IRequest, res: Response): Promise<void> => {
+    try {
+      const shiftId = req.params.shiftId;
+      const currentUser = req.currentUser;
+
+      const shift = await this._shiftSvc.getShiftById(shiftId);
+
+      if (!shift) {
+        res.status(StatusCodes.NOT_FOUND).json({ message: "Shift not found" });
+        return;
+      }
+      const updatedShift = await this._shiftSvc.acceptShift(shiftId);
+
+      res.status(StatusCodes.OK).json(updatedShift);
+    } catch (error) {
+      console.error("Error accepting shift:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+
+  public rejectShift = async (req: IRequest, res: Response): Promise<void> => {
+    try {
+      const shiftId = req.params.shiftId;
+      const currentUser = req.currentUser;
+
+      const shift = await this._shiftSvc.getShiftById(shiftId);
+
+      if (!shift) {
+        res.status(StatusCodes.NOT_FOUND).json({ message: "Shift not found" });
+        return;
+      }
+
+      if (shift.agentId.toString() !== currentUser._id.toString()) {
+        res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: "Not authorized to reject this shift" });
+        return;
+      }
+
+      const updatedShift = await this._shiftSvc.rejectShift(shiftId);
+
+      res.status(StatusCodes.OK).json(updatedShift);
+    } catch (error) {
+      console.error("Error rejecting shift:", error);
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ message: StringValues.INTERNAL_SERVER_ERROR });

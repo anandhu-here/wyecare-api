@@ -10,6 +10,15 @@ class ShiftService {
     return shifts;
   };
 
+  public getunAcceptedShifts = async (userId: string): Promise<IShift[]> => {
+    const shifts = await ShiftModel.find({
+      homeId: userId,
+      isAccepted: false,
+    });
+    console.log(shifts, "shifts");
+    return shifts;
+  };
+
   public getShiftById = async (
     shiftId: string | Types.ObjectId
   ): Promise<IShift | null> => {
@@ -73,6 +82,31 @@ class ShiftService {
       { new: true }
     ).exec();
 
+    return updatedShift;
+  };
+
+  public acceptShift = async (shiftId: string): Promise<IShift | null> => {
+    const updatedShift = await ShiftModel.findByIdAndUpdate(
+      shiftId,
+      {
+        isAccepted: true,
+        isRejected: false,
+      },
+      { new: true }
+    ).exec();
+    return updatedShift;
+  };
+
+  public rejectShift = async (shiftId: string): Promise<IShift | null> => {
+    const updatedShift = await ShiftModel.findByIdAndUpdate(
+      shiftId,
+      {
+        isRejected: true,
+        agentId: undefined,
+        isAccepted: false,
+      },
+      { new: true }
+    ).exec();
     return updatedShift;
   };
 
