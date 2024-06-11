@@ -2,9 +2,18 @@ POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "anandhusathe@gmail.com",
+    "email": "anandhusathee@gmail.com",
     "password": "testing@123"
 }
+
+###
+GET http://localhost:4000/api/v1/auth/linked-users/agency
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzA0ZGEyNmIyODRmZGI4OTYyZSIsImlhdCI6MTcxODEzOTkwOCwiZXhwIjoxNzI1OTE1OTA4fQ.UFV9dhcBjZRsTrViSAQm1bhBdy0DCI1v2Dzt1FvLtpQ
+
+###
+
+GET http://localhost:4000/api/v1/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzA0ZGEyNmIyODRmZGI4OTYyZSIsImlhdCI6MTcxODEzOTkwOCwiZXhwIjoxNzI1OTE1OTA4fQ.UFV9dhcBjZRsTrViSAQm1bhBdy0DCI1v2Dzt1FvLtpQ
 
 ###
 

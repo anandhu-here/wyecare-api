@@ -2,8 +2,9 @@
  * Define Profile Service Class
  */
 
-import type { IUserModel } from "src/interfaces/entities/user";
+import type { ILinkedUser, IUserModel } from "src/interfaces/entities/user";
 import Logger from "../logger";
+import User from "src/models/User";
 
 class ProfileService {
   // Get Recruiter Profile Service
@@ -51,6 +52,55 @@ class ProfileService {
       return Promise.reject(error);
     }
   };
+  /**
+   * @name getLinkedUsers
+   * @description Get linked users filtered by accountType and replace IDs with actual user objects
+   * @param userId string
+   * @param accountType string
+   * @returns Promise<ILinkedUser[]>
+   */
+  public async getLinkedUsers(
+    userId: string,
+    accountType?: string
+  ): Promise<ILinkedUser[]> {
+    try {
+      console.log(accountType, "andi");
+      const user = await User.findById(userId).exec();
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      let linkedUsers: ILinkedUser[] = user.linkedUsers;
+
+      if (accountType) {
+        linkedUsers = linkedUsers.filter(
+          (linkedUser) => linkedUser.accountType === accountType
+        );
+      }
+
+      const populatedLinkedUsers = [];
+
+      for (const linkedUser of linkedUsers) {
+        if (linkedUser.accountType === accountType) {
+          const userIds = linkedUser.users;
+          const users = await User.find({ _id: { $in: userIds } })
+            .select("-password")
+            .exec();
+
+          populatedLinkedUsers.push({
+            accountType: linkedUser.accountType,
+            users: users,
+          });
+        }
+      }
+
+      return populatedLinkedUsers;
+    } catch (error) {
+      console.error("Error getting linked users:", error);
+      throw error;
+    }
+  }
 
   // Create Recruiter Profile Service
   // public createRecruiterExc = async (

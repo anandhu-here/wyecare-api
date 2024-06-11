@@ -8,18 +8,15 @@ import ApiError from "../../exceptions/ApiError";
 import StatusCodes from "../../constants/statusCodes";
 import StringValues from "../../constants/strings";
 import Logger from "../../logger";
+import type ProfileService from "src/services/ProfileService";
 
 class ProfileController {
   //   private readonly _userSvc: UserService;
-  //   private readonly _profileSvc: ProfileService;
+  private readonly _profileSvc: ProfileService;
 
-  //   constructor(
-  //     readonly jobSvc: UserService,
-  //     readonly profileSvc: ProfileService
-  //   ) {
-  //     this._userSvc = jobSvc;
-  //     this._profileSvc = profileSvc;
-  //   }
+  constructor(readonly profileSvc: ProfileService) {
+    this._profileSvc = profileSvc;
+  }
 
   /**
    * @name getProfileDetails
@@ -150,6 +147,46 @@ class ProfileController {
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json({
+        success: false,
+        error: errorMessage,
+      });
+    }
+  };
+  /**
+   * @name getLinkedUsers
+   * @description Get linked users of the currently authenticated user filtered by accountType
+   * @param req IRequest
+   * @param res IResponse
+   * @returns Promise<any>
+   */
+  public getLinkedUsers = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<any> => {
+    try {
+      const currentUser = req.currentUser;
+      const { accountType } = req.params;
+
+      const linkedUsers = await this._profileSvc.getLinkedUsers(
+        currentUser._id as string,
+        accountType as string
+      );
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Linked users retrieved successfully",
+        data: linkedUsers,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "UserController: getLinkedUsers",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         error: errorMessage,
       });

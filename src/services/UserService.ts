@@ -3,7 +3,11 @@
  */
 
 import type { ObjectId, UpdateQuery } from "mongoose";
-import type { IUser, IUserModel } from "../interfaces/entities/user";
+import type {
+  ILinkedUser,
+  IUser,
+  IUserModel,
+} from "../interfaces/entities/user";
 import Logger from "../logger";
 import User from "../models/User";
 

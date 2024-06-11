@@ -21,7 +21,7 @@ const profileSvc = new ProfileService();
 const shiftService = new ShiftService();
 const registerCtlr = new RegisterController(userSvc, profileSvc, shiftService);
 const loginCtlr = new LoginController(userSvc);
-const profileCtlr = new ProfileController();
+const profileCtlr = new ProfileController(profileSvc);
 const passwordCtlr = new PasswordController(userSvc);
 
 /**
@@ -89,6 +89,11 @@ AuthRouter.route("/verify-token").all(loginCtlr.checkUser);
 AuthRouter.route("/me").all(
   AuthMiddleware.isAuthenticatedUser,
   profileCtlr.getProfileDetails
+);
+
+AuthRouter.route("/linked-users/:accountType").get(
+  AuthMiddleware.isAuthenticatedUser,
+  profileCtlr.getLinkedUsers
 );
 
 /**
