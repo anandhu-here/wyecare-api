@@ -21,13 +21,11 @@ class RegisterController {
   private readonly _userSvc: UserService;
   private readonly _profileSvc: ProfileService;
   private readonly _shiftSvc: ShiftService;
-  private readonly _shiftTypeSvc: UserShiftTypeService;
 
   constructor(
     readonly userSvc: UserService,
     readonly profileSvc: ProfileService,
-    readonly shiftSvc: ShiftService,
-    readonly shiftType: UserShiftTypeService
+    readonly shiftSvc: ShiftService
   ) {
     this._userSvc = userSvc;
     this._profileSvc = profileSvc;
@@ -448,6 +446,136 @@ class RegisterController {
 
       res.status(StatusCodes.BAD_REQUEST);
       return res.json({
+        success: false,
+        error: errorMessage,
+      });
+    }
+  };
+  /**
+   * @name linkUser
+   * @description Link a user to the currently authenticated user.
+   * @param req IRequest
+   * @param res IResponse
+   * @returns Promise<any>
+   */
+  public linkUser = async (req: IRequest, res: IResponse): Promise<any> => {
+    try {
+      const currentUser = req.currentUser;
+      const { linkedUserId, linkedUserType } = req.body;
+
+      if (!linkedUserId || !linkedUserType) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          success: false,
+          message: "Linked user ID and type are required",
+        });
+      }
+
+      const linkedUser = await this._userSvc.findUserByIdExc(linkedUserId);
+
+      if (!linkedUser) {
+        return res.status(StatusCodes.NOT_FOUND).json({
+          success: false,
+          message: "Linked user not found",
+        });
+      }
+
+      // Check if the currentUser already has linkedUsers
+      if (!currentUser.linkedUsers) {
+        currentUser.linkedUsers = [];
+      }
+
+      // Check if the linkedUserType already exists in the currentUser's linkedUsers array
+      const existingLinkedUserType = currentUser.linkedUsers.find(
+        (linkedUser) => linkedUser.accountType === linkedUserType
+      );
+
+      if (existingLinkedUserType) {
+        // If the linkedUserType already exists, check if the linkedUser is already linked
+        const isAlreadyLinked = existingLinkedUserType.users.some(
+          (userId) => userId.toString() === linkedUserId
+        );
+
+        if (isAlreadyLinked) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            success: false,
+            message: "User is already linked",
+          });
+        }
+
+        existingLinkedUserType.users.push(linkedUserId);
+      } else {
+        // If the linkedUserType doesn't exist, create a new entry in the currentUser's linkedUsers array
+        currentUser.linkedUsers.push({
+          accountType: linkedUserType,
+          users: [linkedUserId],
+        });
+      }
+
+      // Save the updated currentUser
+      await this._userSvc.updateUser(currentUser._id as string, currentUser);
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "User linked successfully",
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "UserController: linkUser",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        error: errorMessage,
+      });
+    }
+  };
+  /**
+   * @name removeLinkedUser
+   * @description Remove a linked user from the currently authenticated user.
+   * @param req IRequest
+   * @param res IResponse
+   * @returns Promise<any>
+   */
+  public removeLinkedUser = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<any> => {
+    try {
+      const currentUser = req.currentUser;
+      const { linkedUserType, linkedUserId } = req.body;
+
+      if (!linkedUserType || !linkedUserId) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          success: false,
+          message: "Linked user type and ID are required",
+        });
+      }
+
+      const updatedUser = await this._userSvc.removeLinkedUser(
+        currentUser._id as string,
+        linkedUserType,
+        linkedUserId
+      );
+
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: "Linked user removed successfully",
+        data: updatedUser,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "UserController: removeLinkedUser",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         error: errorMessage,
       });

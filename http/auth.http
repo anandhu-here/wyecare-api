@@ -2,8 +2,30 @@ POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "anandhusahe@gmail.com",
+    "email": "anandhusathe@gmail.com",
     "password": "testing@123"
+}
+
+###
+
+PATCH http://localhost:4000/api/v1/auth/link 
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzIyZGEyNmIyODRmZGI4OTYzOCIsImlhdCI6MTcxODEzOTkzOCwiZXhwIjoxNzI1OTE1OTM4fQ.jdsONnm4g2nFIM7g3_mcWHmJ9xBQcf7_ud4g11XUTMY
+
+{
+    "linkedUserId": "6668bc04da26b284fdb8962e",
+    "linkedUserType": "agency"
+}
+
+###
+
+PATCH http://localhost:4000/api/v1/auth/unlink
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzA0ZGEyNmIyODRmZGI4OTYyZSIsImlhdCI6MTcxODEzOTkwOCwiZXhwIjoxNzI1OTE1OTA4fQ.UFV9dhcBjZRsTrViSAQm1bhBdy0DCI1v2Dzt1FvLtpQ
+
+{
+    "linkedUserId": "6668bc22da26b284fdb89638",
+    "linkedUserType": "home"
 }
 
 ###

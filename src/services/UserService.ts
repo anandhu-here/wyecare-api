@@ -133,6 +133,43 @@ class UserService {
       throw error;
     }
   }
+
+  public async removeLinkedUser(
+    userId: string,
+    linkedUserType: string,
+    linkedUserId: string
+  ): Promise<IUser | null> {
+    try {
+      const user = await User.findById(userId).exec();
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const linkedUserIndex = user.linkedUsers.findIndex(
+        (linkedUser) =>
+          linkedUser.accountType === linkedUserType &&
+          linkedUser.users.some((userId) => userId.toString() === linkedUserId)
+      );
+
+      if (linkedUserIndex !== -1) {
+        user.linkedUsers[linkedUserIndex].users = user.linkedUsers[
+          linkedUserIndex
+        ].users.filter((userId) => userId.toString() !== linkedUserId);
+
+        if (user.linkedUsers[linkedUserIndex].users.length === 0) {
+          user.linkedUsers.splice(linkedUserIndex, 1);
+        }
+
+        await user.save();
+      }
+
+      return user;
+    } catch (error) {
+      console.error("Error removing linked user:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

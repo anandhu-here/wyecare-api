@@ -12,6 +12,7 @@ import ProfileController from "./ProfileController";
 import PasswordController from "./PasswordController";
 import { Auth } from "firebase-admin/auth";
 import ShiftService from "src/services/ShiftService";
+import removeLinkedUserValidator from "src/validators/auth";
 
 const AuthRouter: Router = Router();
 
@@ -38,6 +39,30 @@ AuthRouter.route("/send-register-otp").all(registerCtlr.sendRegisterOtp);
  * @access public
  */
 AuthRouter.route("/register").all(registerCtlr.register);
+
+/**
+ * @name RegisterController.linkUser
+ * @description Link user.
+ * @route PATCH /api/v1/auth/link
+ * @access private
+ */
+
+AuthRouter.route("/unlink").patch(
+  AuthMiddleware.isAuthenticatedUser,
+  removeLinkedUserValidator,
+  registerCtlr.removeLinkedUser
+);
+
+/**
+ * @name RegisterController.linkUser
+ * @description Link user.
+ * @route PATCH /api/v1/auth/link
+ * @access private
+ */
+AuthRouter.route("/link").patch(
+  AuthMiddleware.isAuthenticatedUser,
+  registerCtlr.linkUser
+);
 
 /**
  * @name LoginController.login
