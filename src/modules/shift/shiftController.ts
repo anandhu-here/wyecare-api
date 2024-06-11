@@ -135,6 +135,47 @@ class ShiftController {
     }
   };
 
+  public createMultipleShifts = async (
+    req: IRequest,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { shiftsData } = req.body;
+      const currentUser = req.currentUser;
+
+      if (currentUser.accountType !== "home") {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Cannot create shifts" });
+        return;
+      }
+
+      const shiftTypeExists = await this._shiftTypeSvc.checkShiftType(
+        currentUser._id as string
+      );
+
+      if (!shiftTypeExists) {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Shift type does not exist" });
+        return;
+      }
+
+      const createdShifts = await this._shiftSvc.createMultipleShifts(
+        shiftsData,
+        shiftTypeExists.shifttypes,
+        currentUser._id.toString()
+      );
+
+      res.status(StatusCodes.CREATED).json(createdShifts);
+    } catch (error) {
+      console.error("Error creating shifts:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+
   public deleteShift = async (req: IRequest, res: Response): Promise<void> => {
     try {
       const { shiftId } = req.params;

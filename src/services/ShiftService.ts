@@ -1,6 +1,8 @@
 import ShiftModel from "src/models/Shift";
 import { Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
+import Logger from "src/logger";
+import type { IShiftType } from "src/interfaces/entities/shift-types";
 
 class ShiftService {
   public getPublishedShifts = async (
@@ -61,7 +63,33 @@ class ShiftService {
     });
     return newShift;
   };
+  public createMultipleShifts = async (
+    shiftsData: IShift[],
+    shiftTypes: IShiftType[],
+    homeId: string
+  ): Promise<IShift[]> => {
+    const createdShifts: IShift[] = [];
 
+    console.log(JSON.stringify(shiftsData));
+
+    for (const shiftData of shiftsData) {
+      const shiftType = shiftTypes.find((type) => {
+        let shiftTypestr = type._id.toString();
+        return shiftTypestr === shiftData.shiftType.toString();
+      });
+
+      if (shiftType) {
+        const newShift = await ShiftModel.create({
+          ...shiftData,
+          shiftType,
+          homeId,
+        });
+        createdShifts.push(newShift);
+      }
+    }
+
+    return createdShifts;
+  };
   public deleteShift = async (
     shiftId: string | Types.ObjectId
   ): Promise<void> => {

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import type { IAuthTokenModel } from "../interfaces/entities/authToken";
@@ -67,6 +67,24 @@ const UserSchema = new Schema<IUserModel>(
     isEmailVerified: {
       type: Boolean,
       default: false,
+    },
+    linkedUsers: {
+      type: [
+        {
+          accountType: {
+            type: String,
+            enum: ["agency", "agent", "home", "carer"],
+            required: true,
+          },
+          users: [
+            {
+              type: Types.ObjectId,
+              ref: "User",
+            },
+          ],
+        },
+      ],
+      default: [],
     },
 
     emailChangedAt: { type: Date },

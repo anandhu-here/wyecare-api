@@ -2,7 +2,7 @@ POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "anandhusathee@gmail.com",
+    "email": "anandhusahe@gmail.com",
     "password": "testing@123"
 }
 
@@ -14,10 +14,11 @@ Content-Type: application/json
 {
     "fname": "Anandhu",
     "lname": "Satheesh",
-    "email": "anandhusathe@gmail.com",
+    "email": "anandhusahe@gmail.com",
     "password": "testing@123",
     "confirmPassword": "testing@123",
-    "accountType": "carer"
-
+    "accountType": "home",
+    "linkedUserId": "6668bc04da26b284fdb8962e",
+    "linkedUserType": "agency"
 }
     

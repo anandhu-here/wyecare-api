@@ -1,4 +1,4 @@
-import type { Document } from "mongoose";
+import type { Document, ObjectId, Schema } from "mongoose";
 import type { IAuthTokenModel } from "./authToken";
 
 export interface IAvatar {
@@ -6,6 +6,18 @@ export interface IAvatar {
   url: string;
 }
 
+export interface ILinkedUser {
+  accountType?:
+    | "carer"
+    | "agency"
+    | "home"
+    | "admin"
+    | "superadmin"
+    | "user"
+    | "guest"
+    | "unknown";
+  users: Schema.Types.ObjectId[];
+}
 export interface IAccountVerification {
   isVerified: boolean;
   category: string;
@@ -27,6 +39,7 @@ export interface IUser {
     | "user"
     | "guest"
     | "unknown";
+  linkedUsers?: ILinkedUser[];
   isEmailVerified?: boolean;
   emailChangedAt?: Date;
   countryCode?: string;

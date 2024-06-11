@@ -55,6 +55,16 @@ ShiftRouter.route("/").post(
 );
 
 /**
+ * @name ShiftController.createMultiple
+ * @description Create multiple shifts.
+ * @route POST /api/v1/shifts/multiple
+ */
+ShiftRouter.route("/multiple").post(
+  AuthMiddleware.isAuthenticatedUser,
+  _shiftController.createMultipleShifts
+);
+
+/**
  * @name ShiftController.deleteShift
  * @description Delete a shift.
  * @route DELETE /api/v1/shifts/:shiftId

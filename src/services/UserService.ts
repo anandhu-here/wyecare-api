@@ -2,7 +2,7 @@
  * Define User Service Class
  */
 
-import type { ObjectId } from "mongoose";
+import type { ObjectId, UpdateQuery } from "mongoose";
 import type { IUser, IUserModel } from "../interfaces/entities/user";
 import Logger from "../logger";
 import User from "../models/User";
@@ -113,6 +113,26 @@ class UserService {
       return Promise.reject(error);
     }
   };
+  public async updateUser(
+    userId: string,
+    updateData: UpdateQuery<IUser>
+  ): Promise<IUser | null> {
+    try {
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+        new: true,
+        runValidators: true,
+      }).exec();
+
+      if (!updatedUser) {
+        throw new Error("User not found");
+      }
+
+      return updatedUser;
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

@@ -15,6 +15,7 @@ import { EHttpMethod } from "../../enums";
 import type ShiftService from "src/services/ShiftService";
 import type { IUserShiftType } from "src/interfaces/entities/shift-types";
 import type UserShiftTypeService from "src/services/ShiftTypeService";
+import { Types, type ObjectId } from "mongoose";
 
 class RegisterController {
   private readonly _userSvc: UserService;
@@ -246,7 +247,10 @@ class RegisterController {
         password,
         confirmPassword,
         accountType,
-      }: IRegisterBodyData = req.body;
+        ...additionalData
+      }: IRegisterBodyData & Partial<Record<string, any>> = req.body;
+
+      const { linkedUserId, linkedUserType } = additionalData;
 
       if (!fname) {
         return next(
@@ -373,33 +377,55 @@ class RegisterController {
         emailChangedAt: _currentDateTime,
         accountType: accountType,
       };
+      if (linkedUserId && linkedUserType) {
+        newUserData.linkedUsers = [
+          {
+            accountType: linkedUserType,
+            users: [linkedUserId],
+          },
+        ];
+      }
 
       const newUser = await this._userSvc.createUserExc(newUserData);
+
+      if (linkedUserId && linkedUserType) {
+        const existingUser = await this._userSvc.findUserByIdExc(linkedUserId);
+
+        if (existingUser) {
+          // Check if the existingUser already has linkedUsers
+          if (!existingUser.linkedUsers) {
+            existingUser.linkedUsers = [];
+          }
+
+          // Check if the linkedUserType already exists in the linkedUsers array
+          const existingLinkedUserType = existingUser.linkedUsers.find(
+            (linkedUser) => linkedUser.accountType === newUserData.accountType
+          );
+
+          console.log("existingLinkedUserType", existingLinkedUserType);
+
+          if (existingLinkedUserType) {
+            existingLinkedUserType.users.push(newUser._id as ObjectId);
+          } else {
+            // If the linkedUserType doesn't exist, create a new entry in the linkedUsers array
+            existingUser.linkedUsers.push({
+              accountType: newUser.accountType,
+              users: [newUser._id as ObjectId],
+            });
+          }
+
+          // Save the updated existingUser
+          await this._userSvc.updateUser(
+            existingUser._id as string,
+            existingUser
+          );
+        }
+      }
 
       // Set Password
       await newUser.setPassword(password.trim());
 
       await this._profileSvc.getProfileExc(newUser);
-
-      // Create Recuiter Profile
-      //  if (userType === EUserType.Recruiter) {
-      //   await this._profileSvc.createRecruiterExc({
-      //     userId: newUser._id,
-      //     companyName: companyName.trim(),
-      //     designation: designation.trim(),
-      //   });
-      // }
-
-      // Send Welcome Email
-      // const htmlMessage = await EmailTemplateHelper.getOtpEmail(_name);
-
-      // if (htmlMessage) {
-      //   await MailServiceHelper.sendEmail({
-      //     to: _email,
-      //     subject: "Welcome To NixLab Jobs",
-      //     htmlContent: htmlMessage,
-      //   });
-      // }
       const authToken = await newUser.getToken();
 
       res.status(StatusCodes.CREATED);
