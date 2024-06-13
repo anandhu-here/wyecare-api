@@ -38,7 +38,10 @@ AuthRouter.route("/send-register-otp").all(registerCtlr.sendRegisterOtp);
  * @route POST /api/v1/auth/register
  * @access public
  */
-AuthRouter.route("/register").all(registerCtlr.register);
+AuthRouter.route("/register").all(
+  AuthMiddleware.validateRegistration,
+  registerCtlr.register
+);
 
 /**
  * @name RegisterController.linkUser

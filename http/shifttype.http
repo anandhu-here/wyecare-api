@@ -12,6 +12,16 @@ Content-Type: application/json
 {
    "shifts":[
         {
+             "name":"Longday",
+             "startTime":"08:00",
+             "endTime":"20:00"
+        },
+        {
+             "name":"Night",
+             "startTime":"20:00",
+             "endTime":"08:00"
+        },
+        {
                 "name":"Early",
                 "startTime":"08:00",
                 "endTime":"14:00"

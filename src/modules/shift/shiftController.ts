@@ -38,7 +38,7 @@ class ShiftController {
 
       let shifts: IShift[] = [];
 
-      if (currentUser.accountType === "agency") {
+      if (currentUser.accountType === "home") {
         shifts = await this._shiftSvc.getPublishedShifts(
           currentUser._id as string
         );
@@ -160,6 +160,8 @@ class ShiftController {
           .json({ message: "Shift type does not exist" });
         return;
       }
+
+      console.log("Shifts data:", shiftsData);
 
       const createdShifts = await this._shiftSvc.createMultipleShifts(
         shiftsData,

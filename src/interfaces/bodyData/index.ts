@@ -1,9 +1,12 @@
+import type { ICompany } from "../entities/company";
+
 export interface IRegisterBodyData {
   fname: string;
   lname: string;
   email: string;
   password: string;
   confirmPassword?: string;
+  company: ICompany;
   accountType?:
     | "carer"
     | "agency"

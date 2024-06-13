@@ -47,7 +47,7 @@ class UserService {
   // Find an `User` by an email
   public findUserByEmailExc = async (_email: string): Promise<IUserModel> => {
     try {
-      const user = await User.findOne({ email: _email });
+      const user = await User.findOne({ email: _email }).populate("company");
 
       return Promise.resolve(user);
     } catch (error) {

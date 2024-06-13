@@ -58,6 +58,7 @@ class RegisterController {
         email,
         password,
         confirmPassword,
+        company,
       }: IRegisterBodyData = req.body;
 
       if (!fname) {
@@ -245,6 +246,7 @@ class RegisterController {
         password,
         confirmPassword,
         accountType,
+        company,
         ...additionalData
       }: IRegisterBodyData & Partial<Record<string, any>> = req.body;
 
@@ -374,6 +376,7 @@ class RegisterController {
         isEmailVerified: true,
         emailChangedAt: _currentDateTime,
         accountType: accountType,
+        company: company,
       };
       if (linkedUserId && linkedUserType) {
         newUserData.linkedUsers = [
@@ -383,6 +386,7 @@ class RegisterController {
           },
         ];
       }
+      console.log("newUserData", newUserData);
 
       const newUser = await this._userSvc.createUserExc(newUserData);
 

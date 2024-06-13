@@ -8,6 +8,8 @@ import ApiError from "../exceptions/ApiError";
 import type { INext, IRequest, IResponse } from "../interfaces/core/express";
 import User from "../models/User";
 import TokenServiceHelper from "../helpers/TokenServiceHelper";
+import { registerValidator } from "src/validators/register";
+import type { NextFunction } from "express";
 
 class AuthMiddleware {
   /**
@@ -75,6 +77,30 @@ class AuthMiddleware {
     req.token = token;
 
     next();
+  }
+  /**
+   * @name validateRegistration
+   * @description Validate registration request body
+   * @param req IRequest
+   * @param res IResponse
+   * @param next INext
+   * @returns Promise<any>
+   */
+  public static async validateRegistration(
+    req: IRequest,
+    res: IResponse,
+    next: NextFunction
+  ): Promise<any> {
+    try {
+      const { error } = registerValidator.validate(req.body);
+      if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+      }
+
+      next();
+    } catch (error) {
+      next(error);
+    }
   }
 }
 

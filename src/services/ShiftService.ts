@@ -48,7 +48,9 @@ class ShiftService {
   public getShifts = async (
     userId: string | Types.ObjectId
   ): Promise<IShift[]> => {
-    const shifts = await ShiftModel.find({ agentId: userId });
+    const shifts = await ShiftModel.find({ agentId: userId }).populate(
+      "homeId"
+    );
     return shifts;
   };
 

@@ -10,6 +10,60 @@ import Logger from "../logger";
 import AuthToken from "./AuthToken";
 import TokenServiceHelper from "../helpers/TokenServiceHelper";
 
+const companySchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v: string) {
+        return v.length <= 100;
+      },
+      msg: "Company name length should not be greater than 100 characters",
+    },
+  },
+  address: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v: string) {
+        return v.length <= 100;
+      },
+      msg: "Company address length should not be greater than 100 characters",
+    },
+  },
+  phone: {
+    type: String,
+    validate: {
+      validator: function (v: string) {
+        return v.length === 10;
+      },
+      msg: "Company phone number length should be equal to 10 characters",
+    },
+  },
+  email: {
+    type: String,
+    validate: {
+      validator: function (v: string) {
+        return v.length <= 100;
+      },
+      msg: "Company email length should not be greater than 100 characters",
+    },
+  },
+  website: {
+    type: String,
+    validate: {
+      validator: function (v: string) {
+        return v.length <= 100;
+      },
+      msg: "Company website length should not be greater than 100 characters",
+    },
+  },
+  isPrivate: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 const UserSchema = new Schema<IUserModel>(
   {
     fname: {
@@ -33,6 +87,7 @@ const UserSchema = new Schema<IUserModel>(
         msg: "Last name length should not be greater than 100 characters",
       },
     },
+    company: companySchema,
 
     accountType: {
       type: String,

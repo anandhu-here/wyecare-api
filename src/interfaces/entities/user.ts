@@ -1,5 +1,6 @@
 import type { Document, ObjectId, Schema } from "mongoose";
 import type { IAuthTokenModel } from "./authToken";
+import type { ICompany } from "./company";
 
 export interface IAvatar {
   publicId: string;
@@ -30,6 +31,7 @@ export interface IUser {
   lname: string;
   nameChangedAt?: Date;
   email: string;
+  company: ICompany;
   accountType?:
     | "carer"
     | "agency"
