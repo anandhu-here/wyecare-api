@@ -10,7 +10,6 @@ import UserService from "../../services/UserService";
 import ProfileService from "../../services/ProfileService";
 import ProfileController from "./ProfileController";
 import PasswordController from "./PasswordController";
-import { Auth } from "firebase-admin/auth";
 import ShiftService from "src/services/ShiftService";
 import removeLinkedUserValidator from "src/validators/auth";
 
@@ -116,5 +115,15 @@ AuthRouter.route("/send-reset-password-otp").all(
  * @access public
  */
 AuthRouter.route("/reset-password").all(passwordCtlr.resetPassword);
+
+AuthRouter.route("/update-availability").put(
+  AuthMiddleware.isAuthenticatedUser,
+  profileCtlr.updateAvailabilities
+);
+
+AuthRouter.route("/availabilities/:date").delete(
+  AuthMiddleware.isAuthenticatedUser,
+  profileCtlr.deleteAvailability
+);
 
 export default AuthRouter;

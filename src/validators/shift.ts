@@ -21,6 +21,12 @@ export const createShiftSchema = Joi.object({
   shiftType: Joi.string().custom(objectIdValidator).required(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
+  date: Joi.string().required(),
+});
+
+export const assignCarersSchema = Joi.object({
+  shiftId: Joi.string().required(),
+  carerIds: Joi.array().items(Joi.string()).required(),
 });
 
 const validateAgencyAccept = async (

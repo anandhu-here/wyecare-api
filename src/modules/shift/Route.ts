@@ -1,7 +1,7 @@
 import { Router } from "express";
 import ShiftController from "./shiftController";
 import AuthMiddleware from "src/middlewares/Auth";
-import { validateShiftRequest } from "src/middlewares/shift";
+import ShiftMiddleware from "src/middlewares/shift";
 import validateAgencyAccept, { createShiftSchema } from "src/validators/shift";
 
 const ShiftRouter: Router = Router();
@@ -121,4 +121,15 @@ ShiftRouter.route("/:shiftId/reject").put(
   _shiftController.rejectShift
 );
 
+ShiftRouter.route("/assign-carers").post(
+  AuthMiddleware.isAuthenticatedUser,
+  ShiftMiddleware.validateAssignCarers,
+  _shiftController.assignCarersToShift
+);
+
+ShiftRouter.route("/:shiftId/unassign-carer").post(
+  AuthMiddleware.isAuthenticatedUser,
+  ShiftMiddleware.validateUnassignCarer,
+  _shiftController.unassignCarerFromShift
+);
 export default ShiftRouter;

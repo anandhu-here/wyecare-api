@@ -25,13 +25,17 @@ export interface IAccountVerification {
   verifiedAt: Date;
   lastRequestedAt?: Date;
 }
+export interface IAvailableTimings {
+  dates: string[];
+}
 
 export interface IUser {
   fname: string;
   lname: string;
   nameChangedAt?: Date;
   email: string;
-  company: ICompany;
+  company?: ICompany;
+  availabilities: IAvailableTimings;
   accountType?:
     | "carer"
     | "agency"

@@ -5,6 +5,7 @@ export interface IShift extends Document {
   homeId: ObjectId;
   isAccepted: boolean;
   isRejected: boolean;
+  date: string;
   isCompleted: boolean;
   shiftType: ObjectId;
   count: number;

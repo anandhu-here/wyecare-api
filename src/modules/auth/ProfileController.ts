@@ -192,6 +192,55 @@ class ProfileController {
       });
     }
   };
+  public updateAvailabilities = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<void> => {
+    try {
+      const currentUser = req.currentUser;
+      const { dates } = req.body;
+
+      if (!Array.isArray(dates) || dates.length === 0) {
+        res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Dates array is required and cannot be empty" });
+        return;
+      }
+
+      const updatedUser = await this._profileSvc.updateAvailabilities(
+        currentUser._id as string,
+        dates
+      );
+
+      res.status(StatusCodes.OK).json(updatedUser);
+    } catch (error) {
+      console.error("Error updating availabilities:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+  public deleteAvailability = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<void> => {
+    try {
+      const currentUser = req.currentUser;
+      const { date } = req.params;
+
+      const updatedUser = await this._profileSvc.deleteAvailability(
+        currentUser._id as string,
+        date
+      );
+
+      res.status(StatusCodes.OK).json(updatedUser);
+    } catch (error) {
+      console.error("Error deleting availability:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
 }
 
 export default ProfileController;

@@ -10,6 +10,10 @@ import Logger from "../logger";
 import AuthToken from "./AuthToken";
 import TokenServiceHelper from "../helpers/TokenServiceHelper";
 
+const AvailableTimingsSchema = new Schema({
+  dates: [String],
+});
+
 const companySchema = new Schema({
   name: {
     type: String,
@@ -88,7 +92,7 @@ const UserSchema = new Schema<IUserModel>(
       },
     },
     company: companySchema,
-
+    availabilities: AvailableTimingsSchema,
     accountType: {
       type: String,
       enum: [

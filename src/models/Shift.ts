@@ -31,6 +31,9 @@ const ShiftSchema: Schema = new Schema<IShift>(
       type: Number,
       default: 0,
     },
+    date: {
+      type: String,
+    },
     assignedUsers: [
       {
         type: Types.ObjectId,

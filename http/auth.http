@@ -2,13 +2,29 @@ POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "anandhusathe@gmail.com",
+    "email": "anandhusath@gmail.com",
     "password": "testing@123"
 }
 
 ###
-GET http://localhost:4000/api/v1/auth/linked-users/home
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZjRjMDIzMDhhMWJmZjI1NTZmYiIsImlhdCI6MTcxODMxNjg3NiwiZXhwIjoxNzI2MDkyODc2fQ.mh3HDniV3E_DpxNvYidhkYddbllqRSChOBLpKfllJow
+
+PUT http://localhost:4000/api/v1/auth/update-availability
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzFkYWRlZjlhODUxYWZmNGEzMThiZiIsImlhdCI6MTcxODczNzYzMCwiZXhwIjoxNzI2NTEzNjMwfQ.p6-oxZF_qOuxExEo9xoyPjFM31YaWSEJo_yNLJj9AmI
+
+{
+    "dates":[
+        "2022-02-10"
+    ]
+}
+
+###
+DELETE http://localhost:4000/api/v1/auth/availabilities/2022-02-01
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzFkYWRlZjlhODUxYWZmNGEzMThiZiIsImlhdCI6MTcxODczNzYzMCwiZXhwIjoxNzI2NTEzNjMwfQ.p6-oxZF_qOuxExEo9xoyPjFM31YaWSEJo_yNLJj9AmI
+
+###
+GET http://localhost:4000/api/v1/auth/linked-users/carer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
 
 ###
 
@@ -19,11 +35,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzA0Z
 
 PATCH http://localhost:4000/api/v1/auth/link 
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZjRjMDIzMDhhMWJmZjI1NTZmYiIsImlhdCI6MTcxODMxNjg3NiwiZXhwIjoxNzI2MDkyODc2fQ.mh3HDniV3E_DpxNvYidhkYddbllqRSChOBLpKfllJow
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
 
 {
-    "linkedUserId": "666b6ed702308a1bff2556ec",
-    "linkedUserType": "agency"
+    "linkedUserId": "666b6f4c02308a1bff2556fb",
+    "linkedUserType": "home"
 }
 
 ###
@@ -43,17 +59,13 @@ POST http://localhost:4000/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "fname": "Anandhu",
-    "lname": "Satheesh",
-    "email": "anandhusathee@gmail.com",
+    "fname": "Mahika",
+    "lname": "Anandhu",
+    "email": "anandhusath@gmail.com",
     "password": "testing@123",
     "confirmPassword": "testing@123",
-    "accountType": "home",
-    "company":{
-        "name": "Netley Care",
-        "address": "Netley Care, 1-3 Netley Street, Farnworth, Bolton, BL4 7EJ",
-        "email": "anandhusathee@gmail.com",
-        "website": "https://www.netleycare.co.uk/"
-    }
+    "accountType": "carer",
+    "linkedUserId": "666b6ed702308a1bff2556ec",
+    "linkedUserType": "agency"
 }
     

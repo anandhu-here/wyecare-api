@@ -3,13 +3,54 @@ import { Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
 import Logger from "src/logger";
 import type { IShiftType } from "src/interfaces/entities/shift-types";
+import StatusCodes from "src/constants/statusCodes";
+import CustomError from "src/helpers/ErrorHelper";
 
 class ShiftService {
   public getPublishedShifts = async (
     userId: string | Types.ObjectId
   ): Promise<IShift[]> => {
-    const shifts = await ShiftModel.find().populate("shiftType");
+    const shifts = await ShiftModel.find()
+      .populate("shiftType")
+      .populate({
+        path: "homeId",
+        select: "_id company",
+      })
+      .populate({
+        path: "assignedUsers",
+        select: "_id fname lname",
+      })
+      .populate({
+        path: "agentId",
+        select: "_id company",
+      });
     return shifts;
+  };
+
+  public getAssignedShifts = async (
+    userId: string | Types.ObjectId
+  ): Promise<IShift[]> => {
+    try {
+      const shifts = await ShiftModel.find({
+        assignedUsers: new Types.ObjectId(userId),
+      })
+        .populate("shiftType")
+        .populate({
+          path: "homeId",
+          select: "_id company",
+        })
+        .populate({
+          path: "assignedUsers",
+          select: "_id fname lname",
+        })
+        .populate({
+          path: "agentId",
+          select: "_id company",
+        });
+      return shifts;
+    } catch (error) {
+      throw new Error(`Failed to get shifts by assigned user`);
+    }
   };
 
   public getunAcceptedShifts = async (userId: string): Promise<IShift[]> => {
@@ -48,9 +89,19 @@ class ShiftService {
   public getShifts = async (
     userId: string | Types.ObjectId
   ): Promise<IShift[]> => {
-    const shifts = await ShiftModel.find({ agentId: userId }).populate(
-      "homeId"
-    );
+    const shifts = await ShiftModel.find({ agentId: userId })
+      .populate({
+        path: "homeId",
+        select: "_id company",
+      })
+      .populate({
+        path: "assignedUsers",
+        select: "_id fname lname",
+      })
+      .populate({
+        path: "agentId",
+        select: "_id company",
+      });
     return shifts;
   };
 
@@ -94,8 +145,9 @@ class ShiftService {
   };
   public deleteShift = async (
     shiftId: string | Types.ObjectId
-  ): Promise<void> => {
-    await ShiftModel.findByIdAndDelete(shiftId);
+  ): Promise<IShift | null> => {
+    const deletedShift = await ShiftModel.findByIdAndDelete(shiftId);
+    return deletedShift;
   };
 
   public updateShift = async (
@@ -174,6 +226,95 @@ class ShiftService {
       return Promise.reject(error);
     }
   };
+
+  public async assignCarersToShift(
+    shiftId: string,
+    validCarerIds: Types.ObjectId[]
+  ): Promise<IShift | null> {
+    try {
+      const shift: IShift | null = await ShiftModel.findById(shiftId);
+
+      if (shift.isCompleted) {
+        throw new CustomError(
+          "Shift is already completed",
+          StatusCodes.BAD_REQUEST
+        );
+      }
+
+      if (!shift) {
+        throw new CustomError("Shift not found", StatusCodes.NOT_FOUND);
+      }
+
+      const updateFields: Partial<IShift> = {
+        isAccepted: true,
+      };
+
+      const existingAssignedUsers = shift.assignedUsers || [];
+      const combinedAssignedUsers = [
+        ...existingAssignedUsers,
+        ...validCarerIds,
+      ];
+      const uniqueAssignedUsers = Array.from(
+        new Set(combinedAssignedUsers.map(String))
+      ).map((ObjectId) => new Types.ObjectId(ObjectId));
+      updateFields.assignedUsers = uniqueAssignedUsers;
+
+      if (updateFields.assignedUsers.length === shift.count) {
+        updateFields.isCompleted = true;
+      }
+
+      const updatedShift: IShift | null = await ShiftModel.findByIdAndUpdate(
+        shiftId,
+        { $set: updateFields },
+        { new: true }
+      ).populate({
+        path: "assignedUsers",
+        select: "_id fname lname",
+      });
+
+      return updatedShift;
+    } catch (error) {
+      console.error("Er", error);
+      if (error instanceof CustomError) {
+        throw error.message;
+      }
+      throw error;
+    }
+  }
+  public async unassignCarerFromShift(
+    shiftId: string,
+    carerId: Types.ObjectId
+  ): Promise<IShift | null> {
+    try {
+      const shift: IShift | null = await ShiftModel.findById(shiftId);
+
+      if (!shift) {
+        throw new Error("Shift not found");
+      }
+
+      const updatedAssignedUsers = shift.assignedUsers.filter(
+        (userId) => !userId.equals(carerId)
+      );
+
+      const updatedShift: IShift | null = await ShiftModel.findByIdAndUpdate(
+        shiftId,
+        {
+          $set: {
+            assignedUsers: updatedAssignedUsers,
+            isCompleted: updatedAssignedUsers.length === shift.count,
+          },
+        },
+        { new: true }
+      ).populate({
+        path: "assignedUsers",
+        select: "_id fname lname",
+      });
+
+      return updatedShift;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default ShiftService;

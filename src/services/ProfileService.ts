@@ -2,7 +2,11 @@
  * Define Profile Service Class
  */
 
-import type { ILinkedUser, IUserModel } from "src/interfaces/entities/user";
+import type {
+  ILinkedUser,
+  IUser,
+  IUserModel,
+} from "src/interfaces/entities/user";
 import Logger from "../logger";
 import User from "src/models/User";
 
@@ -117,6 +121,61 @@ class ProfileService {
   //     return Promise.reject(error);
   //   }
   // };
+
+  public async updateAvailabilities(
+    userId: string,
+    dates: string[]
+  ): Promise<IUser | null> {
+    try {
+      const user = await User.findById(userId).exec();
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      if (!user.availabilities) {
+        // If availabilities field doesn't exist, create a new one
+        user.availabilities = {
+          dates: [],
+        };
+      }
+
+      user.availabilities.dates = [
+        ...new Set([...user.availabilities.dates, ...dates]),
+      ];
+      await user.save();
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+  public async deleteAvailability(
+    userId: string,
+    date: string
+  ): Promise<IUser | null> {
+    try {
+      const user = await User.findById(userId).exec();
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      if (!user.availabilities) {
+        // If availabilities field doesn't exist, return the user as is
+        return user;
+      }
+
+      user.availabilities.dates = user.availabilities.dates.filter(
+        (d) => d !== date
+      );
+      await user.save();
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default ProfileService;

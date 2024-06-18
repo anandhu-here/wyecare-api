@@ -1,6 +1,26 @@
 
 GET http://localhost:4000/api/v1/shift
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzA0ZGEyNmIyODRmZGI4OTYyZSIsImlhdCI6MTcxODEzOTkwOCwiZXhwIjoxNzI1OTE1OTA4fQ.UFV9dhcBjZRsTrViSAQm1bhBdy0DCI1v2Dzt1FvLtpQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
+###
+
+POST http://localhost:4000/api/v1/shift/assign-carers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
+Content-Type: application/json
+
+{
+    "shiftId": "666dc4dafe8029958dbac906",
+    "carerIds": ["666d642ead8d040eea8adf88","666d66b2ad8d040eea8ae013"]
+}
+###
+
+POST http://localhost:4000/api/v1/shift/666e13d01592b6ecf52045e3/unassign-carer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
+Content-Type: application/json
+
+{
+    "carerId": "666d642ead8d040eea8adf88"
+}
+
 ###
 
 GET http://localhost:4000/api/v1/shift/unaccepted

@@ -43,8 +43,12 @@ class ShiftController {
           currentUser._id as string
         );
         console.log(shifts, "shifts");
-      } else {
+      } else if (currentUser.accountType === "agency") {
         shifts = await this._shiftSvc.getShifts(currentUser._id as string);
+      } else if (currentUser.accountType === "carer") {
+        shifts = await this._shiftSvc.getAssignedShifts(
+          currentUser._id as string
+        );
       }
 
       res.status(StatusCodes.OK).json(shifts);
@@ -181,8 +185,10 @@ class ShiftController {
   public deleteShift = async (req: IRequest, res: Response): Promise<void> => {
     try {
       const { shiftId } = req.params;
-      await this._shiftSvc.deleteShift(shiftId);
-      res.status(StatusCodes.OK).json({ message: StringValues.SUCCESS });
+      const shift = await this._shiftSvc.deleteShift(shiftId);
+      res
+        .status(StatusCodes.OK)
+        .json({ message: StringValues.SUCCESS, shift: shift });
     } catch (error) {
       console.error("Error deleting shift:", error);
       res
@@ -338,6 +344,86 @@ class ShiftController {
     } catch (error) {
       console.error(error, "andi");
       res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+    }
+  };
+
+  public assignCarersToShift = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<void> => {
+    try {
+      const currentUser = req.currentUser;
+      const { shiftId, carerIds } = req.body;
+
+      if (currentUser.accountType !== "agency") {
+        res
+          .status(StatusCodes.FORBIDDEN)
+          .json({ message: "Only agencies can assign carers to shifts" });
+        return;
+      }
+
+      const linkedCarerIds = currentUser.linkedUsers
+        .find((linkedUser) => linkedUser.accountType === "carer")
+        ?.users.map((userId) => userId.toString());
+
+      const validCarerIds = carerIds.filter((carerId: string) =>
+        linkedCarerIds?.includes(carerId)
+      );
+
+      if (validCarerIds.length !== carerIds.length) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+          message:
+            "Some of the provided carer IDs are not linked to the agency",
+        });
+        return;
+      }
+
+      const objectValidCarerIds = validCarerIds.map(
+        (carerId) => new Types.ObjectId(carerId)
+      );
+
+      const updatedShift: IShift | null =
+        await this._shiftSvc.assignCarersToShift(shiftId, objectValidCarerIds);
+
+      if (!updatedShift) {
+        res.status(StatusCodes.NOT_FOUND).json({ message: "Shift not found" });
+        return;
+      }
+
+      res.status(StatusCodes.OK).json({
+        message: "Carers assigned to shift successfully",
+        shift: updatedShift,
+      });
+    } catch (error) {
+      console.error("Error assigning carers to shift:", error);
+      res.status(StatusCodes.BAD_REQUEST).json({ message: error });
+    }
+  };
+  public unassignCarerFromShift = async (
+    req: IRequest,
+    res: Response
+  ): Promise<void> => {
+    try {
+      const { shiftId } = req.params;
+      const { carerId } = req.body;
+
+      const updatedShift = await this._shiftSvc.unassignCarerFromShift(
+        shiftId,
+        carerId
+      );
+
+      if (!updatedShift) {
+        res.status(404).json({ message: "Shift not found" });
+        return;
+      }
+
+      res.status(200).json({
+        message: "Carer unassigned from shift successfully",
+        shift: updatedShift,
+      });
+    } catch (error) {
+      console.error("Error unassigning carer from shift:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   };
 }
