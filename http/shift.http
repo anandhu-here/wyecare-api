@@ -1,6 +1,6 @@
 
 GET http://localhost:4000/api/v1/shift
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmQ2NDJlYWQ4ZDA0MGVlYThhZGY4OCIsImlhdCI6MTcxODQ0NTEwMiwiZXhwIjoxNzI2MjIxMTAyfQ.nzpS29JtJkT_eBpLP_-P9DofaaXD0i0ffD7RMSbDt2U
 ###
 
 POST http://localhost:4000/api/v1/shift/assign-carers
