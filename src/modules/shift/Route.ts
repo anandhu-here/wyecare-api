@@ -132,4 +132,8 @@ ShiftRouter.route("/:shiftId/unassign-carer").post(
   ShiftMiddleware.validateUnassignCarer,
   _shiftController.unassignCarerFromShift
 );
+ShiftRouter.route("/:shiftId/generateQR").post(
+  AuthMiddleware.isAuthenticatedUser,
+  _shiftController.generateQRCode
+);
 export default ShiftRouter;

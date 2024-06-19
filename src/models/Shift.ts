@@ -41,6 +41,8 @@ const ShiftSchema: Schema = new Schema<IShift>(
         default: [],
       },
     ],
+    privateKey: { type: String, required: false },
+    signedCarers: { type: Object, default: {} },
     shiftType: {
       type: ShiftTypeSchema,
       required: true,

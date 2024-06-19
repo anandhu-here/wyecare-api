@@ -2,7 +2,7 @@ POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "anandhusath@gmail.com",
+    "email": "anandhusathee@gmail.com",
     "password": "testing@123"
 }
 
@@ -59,13 +59,13 @@ POST http://localhost:4000/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "fname": "Mahika",
-    "lname": "Anandhu",
-    "email": "anandhusath@gmail.com",
+    "fname": "Marshal",
+    "lname": "Sebastian",
+    "email": "marshal@gmail.com",
     "password": "testing@123",
     "confirmPassword": "testing@123",
-    "accountType": "carer",
-    "linkedUserId": "666b6ed702308a1bff2556ec",
-    "linkedUserType": "agency"
+    "accountType": "nurse",
+    "linkedUserId": "666b6f4c02308a1bff2556fb",
+    "linkedUserType": "home"
 }
     

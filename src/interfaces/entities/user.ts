@@ -11,6 +11,7 @@ export interface ILinkedUser {
   accountType?:
     | "carer"
     | "agency"
+    | "nurse"
     | "home"
     | "admin"
     | "superadmin"
@@ -39,6 +40,7 @@ export interface IUser {
   accountType?:
     | "carer"
     | "agency"
+    | "nurse"
     | "home"
     | "admin"
     | "superadmin"

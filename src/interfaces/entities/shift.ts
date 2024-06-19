@@ -10,6 +10,10 @@ export interface IShift extends Document {
   shiftType: ObjectId;
   count: number;
   assignedUsers: Types.ObjectId[];
+  privateKey?: string;
+  signedCarers?: {
+    [carerId: string]: string;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 }

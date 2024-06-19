@@ -7,6 +7,7 @@ import UserService from "src/services/UserService";
 import { Types, type ObjectId } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
 import UserShiftTypeService from "src/services/ShiftTypeService";
+import Logger from "src/logger";
 
 class ShiftController {
   private readonly _shiftSvc: ShiftService;
@@ -38,7 +39,10 @@ class ShiftController {
 
       let shifts: IShift[] = [];
 
-      if (currentUser.accountType === "home") {
+      if (
+        currentUser.accountType === "home" ||
+        currentUser.accountType === "nurse"
+      ) {
         shifts = await this._shiftSvc.getPublishedShifts(
           currentUser._id as string
         );
@@ -424,6 +428,44 @@ class ShiftController {
     } catch (error) {
       console.error("Error unassigning carer from shift:", error);
       res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  public generateQRCode = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<void> => {
+    try {
+      const { shiftId } = req.params;
+      if (req.currentUser.accountType !== "nurse") {
+        res
+          .status(StatusCodes.FORBIDDEN)
+          .json({ message: "Only nurses can generate QR codes" });
+        return;
+      }
+      const qrCodeData = await this._shiftSvc.generateQRCode(shiftId);
+      Logger.info("QR code data:", qrCodeData);
+      res.status(200).json(qrCodeData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate QR code" });
+    }
+  };
+
+  public verifyPublicKey = async (
+    req: IRequest,
+    res: IResponse
+  ): Promise<void> => {
+    try {
+      const { shiftId } = req.params;
+      const { publicKey, carerId } = req.body;
+      const result = await this._shiftSvc.verifyPublicKey(
+        shiftId,
+        publicKey,
+        carerId
+      );
+      res.status(200).json({ success: result });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to verify public key" });
     }
   };
 }

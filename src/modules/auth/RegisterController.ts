@@ -247,6 +247,7 @@ class RegisterController {
         confirmPassword,
         accountType,
         company,
+        availabilities,
         ...additionalData
       }: IRegisterBodyData & Partial<Record<string, any>> = req.body;
 
@@ -377,6 +378,7 @@ class RegisterController {
         emailChangedAt: _currentDateTime,
         accountType: accountType,
         company: company,
+        availabilities: availabilities,
       };
       if (linkedUserId && linkedUserType) {
         newUserData.linkedUsers = [

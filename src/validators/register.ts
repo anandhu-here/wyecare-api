@@ -20,6 +20,7 @@ export const registerValidator = Joi.object({
     .valid(
       "carer",
       "agency",
+      "nurse",
       "home",
       "admin",
       "superadmin",

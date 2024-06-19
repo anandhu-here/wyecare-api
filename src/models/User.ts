@@ -132,7 +132,18 @@ const UserSchema = new Schema<IUserModel>(
         {
           accountType: {
             type: String,
-            enum: ["agency", "agent", "home", "carer"],
+            enum: [
+              "agency",
+              "agent",
+              "home",
+              "carer",
+              "nurse",
+              "admin",
+              "superadmin",
+              "user",
+              "guest",
+              "unknown",
+            ],
             required: true,
           },
           users: [

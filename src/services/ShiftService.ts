@@ -5,6 +5,8 @@ import Logger from "src/logger";
 import type { IShiftType } from "src/interfaces/entities/shift-types";
 import StatusCodes from "src/constants/statusCodes";
 import CustomError from "src/helpers/ErrorHelper";
+import NodeRSA from "node-rsa";
+import QRCode from "qrcode";
 
 class ShiftService {
   public getPublishedShifts = async (
@@ -314,6 +316,46 @@ class ShiftService {
     } catch (error) {
       throw error;
     }
+  }
+  public async generateQRCode(
+    shiftId: string
+  ): Promise<{ publicKey: string; qrCodeData: string }> {
+    const shift = await ShiftModel.findById(shiftId);
+    if (!shift) {
+      throw new Error("Shift not found");
+    }
+
+    const key = new NodeRSA({ b: 512 });
+    const privateKey = key.exportKey("pkcs1-private-pem");
+    const publicKey = key.exportKey("pkcs1-public-pem");
+
+    shift.privateKey = privateKey;
+    await shift.save();
+
+    const qrCodeData = await QRCode.toDataURL(publicKey);
+
+    return { publicKey, qrCodeData };
+  }
+
+  public async verifyPublicKey(
+    shiftId: string,
+    publicKey: string,
+    carerId: string
+  ): Promise<boolean> {
+    const shift = await ShiftModel.findById(shiftId);
+    if (!shift) {
+      throw new Error("Shift not found");
+    }
+
+    const key = new NodeRSA(shift.privateKey);
+    const isValid = key.verify(carerId, publicKey, "utf8", "pkcs1-public-pem");
+
+    if (isValid) {
+      shift.signedCarers[carerId] = publicKey;
+      await shift.save();
+    }
+
+    return isValid;
   }
 }
 
