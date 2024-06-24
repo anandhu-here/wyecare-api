@@ -3,11 +3,7 @@
  */
 
 import type { ObjectId, UpdateQuery } from "mongoose";
-import type {
-  ILinkedUser,
-  IUser,
-  IUserModel,
-} from "../interfaces/entities/user";
+import type { IUser, IUserModel } from "../interfaces/entities/user";
 import Logger from "../logger";
 import User from "../models/User";
 
@@ -21,6 +17,46 @@ class UserService {
     } catch (error) {
       Logger.error(
         "UserService: createUserExc",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
+  /**
+   * Search users by account type and company name
+   * @param accountType The account type to filter by (optional)
+   * @param companyName The company name to search for (optional)
+   * @returns Promise<IUserModel[]>
+   */
+  public searchUsersExc = async (
+    accountType?: string,
+    companyName?: string
+  ): Promise<IUserModel[]> => {
+    try {
+      let query: any = {};
+
+      if (accountType) {
+        query.accountType = accountType;
+      }
+
+      if (companyName) {
+        const searchRegex = new RegExp(companyName.replace(/\s+/g, "|"), "i");
+        query.$or = [
+          { "company.name": { $regex: searchRegex } },
+          { fname: { $regex: searchRegex } },
+          { lname: { $regex: searchRegex } },
+        ];
+      }
+
+      const users = await User.find(query).select(
+        "_id fname lname email company.name company.address"
+      );
+
+      return Promise.resolve(users);
+    } catch (error) {
+      Logger.error(
+        "UserSearchService: searchUsersExc",
         "errorInfo:" + JSON.stringify(error)
       );
       return Promise.reject(error);

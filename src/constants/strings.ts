@@ -3,6 +3,26 @@
  */
 
 class StringValues {
+  public static INVITATION_CANCELLED_SUCCESS =
+    "Invitation cancelled successfully";
+  public static INVITATIONS_FETCHED_SUCCESS =
+    "Invitations fetched successfully";
+  public static UNAUTHORIZED_TO_CANCEL_INVITATION =
+    "Unauthorized to cancel this invitation";
+  public static INVITATION_ALREADY_PROCESSED =
+    "Invitation is already processed";
+  public static INVITATION_SENT_SUCCESS: "Invitation sent successfully";
+  public static INVITATION_ACCEPTED_SUCCESS: "Invitation accepted successfully";
+  public static INVITATION_REJECTED_SUCCESS: "Invitation rejected successfully";
+  public static RECEIVER_ID_REQUIRED: "Receiver ID is required";
+  public static INVITATION_ID_REQUIRED: "Invitation ID is required";
+  public static SENDER_NOT_FOUND: "Sender not found";
+  public static RECEIVER_NOT_FOUND: "Receiver not found";
+  public static INVITATION_NOT_FOUND: "Invitation not found";
+  public static UNAUTHORIZED_TO_ACCEPT_INVITATION: "Unauthorized to accept this invitation";
+  public static UNAUTHORIZED_TO_REJECT_INVITATION: "Unauthorized to reject this invitation";
+  public static INVITATION_NO_LONGER_PENDING: "Invitation is no longer pending";
+  public static SEARCH_CRITERIA_REQUIRED = "Search criteria is required";
   public static SHIFT_TYPE_REQUIRED = "Shift type is required";
   public static INVALID_REQUEST_BODY = "Invalid request body";
   public static USER_SHIFT_TYPE_NOT_FOUND = "User shift type not found";

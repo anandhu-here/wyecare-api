@@ -9,13 +9,18 @@ import StatusCodes from "../../constants/statusCodes";
 import StringValues from "../../constants/strings";
 import Logger from "../../logger";
 import type ProfileService from "src/services/ProfileService";
+import UserService from "src/services/UserService";
 
 class ProfileController {
-  //   private readonly _userSvc: UserService;
+  private readonly _userSvc: UserService;
   private readonly _profileSvc: ProfileService;
 
-  constructor(readonly profileSvc: ProfileService) {
+  constructor(
+    readonly profileSvc: ProfileService,
+    readonly userSvc: UserService
+  ) {
     this._profileSvc = profileSvc;
+    this._userSvc = userSvc;
   }
 
   /**
@@ -128,7 +133,7 @@ class ProfileController {
       //   updatedAt: currentUser.updatedAt,
       // };
 
-      return res.status(StatusCodes.CREATED).json({
+      return res.status(StatusCodes.OK).json({
         success: true,
         message: StringValues.SUCCESS,
         token: token,
@@ -239,6 +244,70 @@ class ProfileController {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ message: StringValues.INTERNAL_SERVER_ERROR });
+    }
+  };
+  public searchUsers = async (
+    req: IRequest,
+    res: IResponse,
+    next: INext
+  ): Promise<any> => {
+    if (req.method !== EHttpMethod.GET) {
+      return next(
+        new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
+      );
+    }
+
+    try {
+      const { accountType } = req.params;
+      let { companyName } = req.query;
+
+      if (!accountType && !companyName) {
+        return next(
+          new ApiError(
+            StringValues.SEARCH_CRITERIA_REQUIRED,
+            StatusCodes.BAD_REQUEST
+          )
+        );
+      }
+
+      if (companyName === undefined || companyName === "") {
+        return res.status(StatusCodes.OK).json({
+          success: true,
+          message: StringValues.SUCCESS,
+          data: [],
+        });
+      }
+
+      // Remove any surrounding quotes from companyName
+      if (typeof companyName === "string") {
+        companyName = companyName.replace(/^['"]|['"]$/g, "");
+      }
+
+      const users = await this._userSvc.searchUsersExc(
+        accountType as string,
+        companyName as string
+      );
+
+      res.status(StatusCodes.OK);
+      return res.json({
+        success: true,
+        message: StringValues.SUCCESS,
+        data: users,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "UserSearchController: searchUsers",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      res.status(StatusCodes.BAD_REQUEST);
+      return res.json({
+        success: false,
+        error: errorMessage,
+      });
     }
   };
 }

@@ -2,7 +2,7 @@ import { Router } from "express";
 import ShiftController from "./shiftController";
 import AuthMiddleware from "src/middlewares/Auth";
 import ShiftMiddleware from "src/middlewares/shift";
-import validateAgencyAccept, { createShiftSchema } from "src/validators/shift";
+import validateAgencyAccept from "src/validators/shift";
 
 const ShiftRouter: Router = Router();
 const _shiftController = new ShiftController();

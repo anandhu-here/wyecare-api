@@ -1,22 +1,19 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import StatusCodes from "src/constants/statusCodes";
 import StringValues from "src/constants/strings";
 import type { IRequest, IResponse } from "src/interfaces/core/express";
 import ShiftService from "src/services/ShiftService";
-import UserService from "src/services/UserService";
-import { Types, type ObjectId } from "mongoose";
+import { Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
 import UserShiftTypeService from "src/services/ShiftTypeService";
 import Logger from "src/logger";
 
 class ShiftController {
   private readonly _shiftSvc: ShiftService;
-  private readonly _userSvc: UserService;
   private readonly _shiftTypeSvc: UserShiftTypeService;
 
   constructor() {
     this._shiftSvc = new ShiftService();
-    this._userSvc = new UserService();
     this._shiftTypeSvc = new UserShiftTypeService();
   }
 
@@ -262,7 +259,6 @@ class ShiftController {
   public acceptShift = async (req: IRequest, res: Response): Promise<void> => {
     try {
       const shiftId = req.params.shiftId;
-      const currentUser = req.currentUser;
 
       const shift = await this._shiftSvc.getShiftById(shiftId);
 

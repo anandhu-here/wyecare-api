@@ -1,4 +1,4 @@
-import type { Document, ObjectId, Schema } from "mongoose";
+import type { Document, Schema } from "mongoose";
 import type { IAuthTokenModel } from "./authToken";
 import type { ICompany } from "./company";
 

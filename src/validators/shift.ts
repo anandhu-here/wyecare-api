@@ -1,6 +1,6 @@
 import type { NextFunction } from "express";
 import Joi from "joi";
-import { ObjectId, Types } from "mongoose";
+import { Types } from "mongoose";
 import StatusCodes from "src/constants/statusCodes";
 import type { IRequest, IResponse } from "src/interfaces/core/express";
 import ShiftModel from "src/models/Shift";

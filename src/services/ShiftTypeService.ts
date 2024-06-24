@@ -2,10 +2,8 @@ import type {
   IUserShiftType,
   IUserShiftTypeModel,
 } from "src/interfaces/entities/shift-types";
-import StringValues from "../constants/strings";
 import Logger from "../logger";
 import UserShiftType from "src/models/ShiftType";
-import type { ObjectId } from "mongoose";
 
 class UserShiftTypeService {
   // Create user shifts

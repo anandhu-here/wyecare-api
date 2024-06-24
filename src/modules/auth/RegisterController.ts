@@ -13,14 +13,11 @@ import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
 import { EHttpMethod } from "../../enums";
 import type ShiftService from "src/services/ShiftService";
-import type { IUserShiftType } from "src/interfaces/entities/shift-types";
-import type UserShiftTypeService from "src/services/ShiftTypeService";
-import { Types, type ObjectId } from "mongoose";
+import { type ObjectId } from "mongoose";
 
 class RegisterController {
   private readonly _userSvc: UserService;
   private readonly _profileSvc: ProfileService;
-  private readonly _shiftSvc: ShiftService;
 
   constructor(
     readonly userSvc: UserService,
@@ -29,7 +26,6 @@ class RegisterController {
   ) {
     this._userSvc = userSvc;
     this._profileSvc = profileSvc;
-    this._shiftSvc = shiftSvc;
   }
 
   /**
@@ -58,7 +54,6 @@ class RegisterController {
         email,
         password,
         confirmPassword,
-        company,
       }: IRegisterBodyData = req.body;
 
       if (!fname) {
@@ -485,44 +480,70 @@ class RegisterController {
         });
       }
 
-      // Check if the currentUser already has linkedUsers
-      if (!currentUser.linkedUsers) {
-        currentUser.linkedUsers = [];
-      }
+      // Helper function to update linkedUsers array
+      const updateLinkedUsers = (
+        user: any,
+        otherUserId: string,
+        otherUserType: string
+      ) => {
+        if (!user.linkedUsers) {
+          user.linkedUsers = [];
+        }
 
-      // Check if the linkedUserType already exists in the currentUser's linkedUsers array
-      const existingLinkedUserType = currentUser.linkedUsers.find(
-        (linkedUser) => linkedUser.accountType === linkedUserType
-      );
-
-      if (existingLinkedUserType) {
-        // If the linkedUserType already exists, check if the linkedUser is already linked
-        const isAlreadyLinked = existingLinkedUserType.users.some(
-          (userId) => userId.toString() === linkedUserId
+        const existingLinkedUserType = user.linkedUsers.find(
+          (linkedUser: any) => linkedUser.accountType === otherUserType
         );
 
-        if (isAlreadyLinked) {
-          return res.status(StatusCodes.BAD_REQUEST).json({
-            success: false,
-            message: "User is already linked",
+        if (existingLinkedUserType) {
+          const isAlreadyLinked = existingLinkedUserType.users.some(
+            (userId: any) => userId.toString() === otherUserId
+          );
+
+          if (isAlreadyLinked) {
+            return false; // User is already linked
+          }
+
+          existingLinkedUserType.users.push(otherUserId);
+        } else {
+          user.linkedUsers.push({
+            accountType: otherUserType,
+            users: [otherUserId],
           });
         }
 
-        existingLinkedUserType.users.push(linkedUserId);
-      } else {
-        // If the linkedUserType doesn't exist, create a new entry in the currentUser's linkedUsers array
-        currentUser.linkedUsers.push({
-          accountType: linkedUserType,
-          users: [linkedUserId],
+        return true; // User was successfully linked
+      };
+
+      // Update currentUser's linkedUsers
+      const currentUserUpdated = updateLinkedUsers(
+        currentUser,
+        linkedUserId,
+        linkedUserType
+      );
+
+      if (!currentUserUpdated) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          success: false,
+          message: "User is already linked",
         });
       }
 
-      // Save the updated currentUser
-      await this._userSvc.updateUser(currentUser._id as string, currentUser);
+      // Update linkedUser's linkedUsers
+      updateLinkedUsers(
+        linkedUser,
+        currentUser._id as string,
+        currentUser.accountType
+      );
+
+      // Save both updated users
+      await Promise.all([
+        this._userSvc.updateUser(currentUser._id as string, currentUser),
+        this._userSvc.updateUser(linkedUser._id as string, linkedUser),
+      ]);
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        message: "User linked successfully",
+        message: "Users linked successfully",
       });
     } catch (error: any) {
       const errorMessage =

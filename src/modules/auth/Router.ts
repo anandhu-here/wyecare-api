@@ -20,7 +20,7 @@ const profileSvc = new ProfileService();
 const shiftService = new ShiftService();
 const registerCtlr = new RegisterController(userSvc, profileSvc, shiftService);
 const loginCtlr = new LoginController(userSvc);
-const profileCtlr = new ProfileController(profileSvc);
+const profileCtlr = new ProfileController(profileSvc, userSvc);
 const passwordCtlr = new PasswordController(userSvc);
 
 /**
@@ -124,6 +124,11 @@ AuthRouter.route("/update-availability").put(
 AuthRouter.route("/availabilities/:date").delete(
   AuthMiddleware.isAuthenticatedUser,
   profileCtlr.deleteAvailability
+);
+
+AuthRouter.route("/search-users/:accountType").get(
+  AuthMiddleware.isAuthenticatedUser,
+  profileCtlr.searchUsers
 );
 
 export default AuthRouter;

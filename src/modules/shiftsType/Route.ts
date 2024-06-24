@@ -6,7 +6,6 @@ import { Router } from "express";
 import AuthMiddleware from "../../middlewares/Auth";
 import ShiftTypeController from "./ShiftTypeConrtoller";
 import ShiftTypeService from "../../services/ShiftTypeService";
-import Shift from "src/models/Shift";
 
 const ShiftTypeRouter: Router = Router();
 

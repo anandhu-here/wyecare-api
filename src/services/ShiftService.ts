@@ -1,7 +1,6 @@
 import ShiftModel from "src/models/Shift";
 import { Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
-import Logger from "src/logger";
 import type { IShiftType } from "src/interfaces/entities/shift-types";
 import StatusCodes from "src/constants/statusCodes";
 import CustomError from "src/helpers/ErrorHelper";
@@ -12,7 +11,9 @@ class ShiftService {
   public getPublishedShifts = async (
     userId: string | Types.ObjectId
   ): Promise<IShift[]> => {
-    const shifts = await ShiftModel.find()
+    const shifts = await ShiftModel.find({
+      homeId: userId,
+    })
       .populate("shiftType")
       .populate({
         path: "homeId",

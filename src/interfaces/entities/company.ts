@@ -6,5 +6,5 @@ export interface ICompany extends Document {
   phone?: string;
   email?: string;
   website?: string;
-  isPrivate: boolean;
+  isPrivate?: boolean;
 }
