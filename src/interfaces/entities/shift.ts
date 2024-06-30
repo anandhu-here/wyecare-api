@@ -7,7 +7,7 @@ export interface IShift extends Document {
   isRejected: boolean;
   date: string;
   isCompleted: boolean;
-  shiftType: ObjectId;
+  shiftType: any;
   count: number;
   assignedUsers: Types.ObjectId[];
   privateKey?: string;

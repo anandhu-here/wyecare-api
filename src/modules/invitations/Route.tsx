@@ -3,6 +3,7 @@ import AuthMiddleware from "src/middlewares/Auth";
 import Invitation from "./invitationController";
 import InvitationService from "src/services/InvitationService";
 import UserService from "src/services/UserService";
+import InvitationMidleWare from "src/middlewares/invitation";
 
 const InvitationRouter: Router = Router();
 const _invSvc = new InvitationService();
@@ -17,10 +18,13 @@ InvitationRouter.route("/").post(
     AuthMiddleware.isAuthenticatedUser,
     _invController.sendInvitation
 )
-
 InvitationRouter.route("/").get(
     AuthMiddleware.isAuthenticatedUser,
     _invController.getInvitations
+)
+InvitationRouter.route('/token/:invToken').get(
+    AuthMiddleware.isAuthenticatedUser,
+    _invController.getInvitation
 )
 InvitationRouter.route("/accept/:invitationId").put(
     AuthMiddleware.isAuthenticatedUser,

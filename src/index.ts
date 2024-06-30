@@ -1,5 +1,6 @@
 import App from "./app";
 import Logger from "./logger";
+require("dotenv").config();
 
 const main = (): void => {
   // Run the Server

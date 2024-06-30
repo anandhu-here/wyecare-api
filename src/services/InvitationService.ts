@@ -46,7 +46,8 @@ class InvitationService {
 
   public sendInvitationExc = async (
     senderId: string,
-    receiverId: string
+    receiverId: string,
+    senderAccountType: string
   ): Promise<IJoinInvitation> => {
     try {
       const sender = await User.findById(senderId);
@@ -62,6 +63,7 @@ class InvitationService {
       const invitation = new Invitations({
         senderId,
         receiverId,
+        senderAccountType,
         companyName:
           sender.accountType === "carer"
             ? `${sender.fname} ${sender.lname}`
@@ -69,6 +71,7 @@ class InvitationService {
       });
 
       await invitation.save();
+
       return invitation;
     } catch (error) {
       Logger.error(

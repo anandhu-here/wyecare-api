@@ -1,6 +1,7 @@
+@homeToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODE5NTJhZGFlNzQzOGYyZTNiMGNmYiIsImlhdCI6MTcxOTc2ODM2MiwiZXhwIjoxNzI3NTQ0MzYyfQ.2NK0rpsIHD4Ii2tHSr-nobWqwI4duaZ8lXtpv4U1ot4
 
 GET http://localhost:4000/api/v1/shift
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmQ2NDJlYWQ4ZDA0MGVlYThhZGY4OCIsImlhdCI6MTcxODQ0NTEwMiwiZXhwIjoxNzI2MjIxMTAyfQ.nzpS29JtJkT_eBpLP_-P9DofaaXD0i0ffD7RMSbDt2U
+Authorization: Bearer {{homeToken}}
 ###
 
 POST http://localhost:4000/api/v1/shift/assign-carers

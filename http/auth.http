@@ -1,15 +1,15 @@
 
 @homeToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzYwZmJlNTMyZmMyNjYyNWU0OTMwNyIsImlhdCI6MTcxOTAxMzMxMCwiZXhwIjoxNzI2Nzg5MzEwfQ.028jxNHQAgsoqPvBMiOMD68O9Sy-GKJCOIseCD67OuY
-@agencyToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzYwZGRlMTQ3NTg1MWRmMjA4NGIyNiIsImlhdCI6MTcxOTAxMjgzMCwiZXhwIjoxNzI2Nzg4ODMwfQ.4Fvx5Z3ZH_ViqAs2SIDxLCFsj9zobQA64T5DL5pDyH8
+@agencyToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODBhNTUzNjJmZmNhOTg5ZjE4ZGU0ZCIsImlhdCI6MTcxOTcwNjk2MywiZXhwIjoxNzI3NDgyOTYzfQ.ZbJC9WLTMk2WS_SKKc-TrbYeCGoTlCyqfUDpMcCAkyE
 
 
 ### 
 
-POST https://fc7e-82-44-21-31.ngrok-free.app/api/v1/auth/login
+POST http://localhost:4000/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "anandhusathee@gmail.com",
+    "email": "anandhu@circadacare.com",
     "password": "testing@123"
 }
 
@@ -51,10 +51,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3M
 
 PATCH http://localhost:4000/api/v1/auth/unlink
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjhiYzA0ZGEyNmIyODRmZGI4OTYyZSIsImlhdCI6MTcxODEzOTkwOCwiZXhwIjoxNzI1OTE1OTA4fQ.UFV9dhcBjZRsTrViSAQm1bhBdy0DCI1v2Dzt1FvLtpQ
+Authorization: Bearer {{agencyToken}}
 
 {
-    "linkedUserId": "6668bc22da26b284fdb89638",
+    "linkedUserId": "66760f1b532fc26625e492f6",
     "linkedUserType": "home"
 }
 

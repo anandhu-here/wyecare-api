@@ -2,7 +2,7 @@ import { model, Schema, Types } from "mongoose";
 import type { IShift } from "src/interfaces/entities/shift";
 import { ShiftTypeSchema } from "./ShiftType";
 
-const ShiftSchema: Schema = new Schema<IShift>(
+export const ShiftSchema: Schema = new Schema<IShift>(
   {
     agentId: {
       type: Types.ObjectId,

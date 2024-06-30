@@ -6,17 +6,25 @@ import ApiError from "src/exceptions/ApiError";
 import CustomError from "src/helpers/ErrorHelper";
 import { IRequest, IResponse } from "src/interfaces/core/express";
 import Logger from "src/logger";
+import EmailServices from "src/services/EmailService";
 import InvitationService from "src/services/InvitationService";
 import UserService from "src/services/UserService";
+import { getHomeTemplate } from "../email/templates/toHome";
+import { getCarerTemplate } from "../email/templates/toCarer";
+import TokenServiceHelper from "src/helpers/InvTokenHelper";
 
 class Invitation {
   private readonly _invitationSvc: InvitationService;
+  private readonly _userSvc: UserService;
+  private readonly _emailSvc: EmailServices;
 
   constructor(
     readonly invitationSvc: InvitationService,
     readonly userSvc: UserService
   ) {
     this._invitationSvc = invitationSvc;
+    this._userSvc = userSvc;
+    this._emailSvc = new EmailServices();
   }
 
   /**
@@ -140,8 +148,35 @@ class Invitation {
 
       const invitation = await this._invitationSvc.sendInvitationExc(
         senderId as string,
-        receiverId
+        receiverId,
+        req.currentUser.accountType
       );
+
+      const token = invitation.invToken;
+      const receiver = await this._userSvc.findUserByIdExc(receiverId);
+
+      let template = getHomeTemplate(
+        `http://localhost:3000?token=${token}&company=${req.currentUser?.company.name}`
+      );
+      if (receiver.accountType === "carer") {
+        template = getCarerTemplate(
+          `http://localhost:3000?token=${token}&company=${req.currentUser?.company.name}`
+        );
+      }
+
+      if (receiver.accountType === "carer") {
+        template = getCarerTemplate(
+          `http://localhost:3000?token=${token}&company=${req.currentUser?.company.name}`
+        );
+      }
+
+      // Send email to the receiver
+      await this._emailSvc.sendEmail({
+        from: "annusathee@gmail.com",
+        to: receiver.email,
+        subject: "Join Invitation",
+        html: template,
+      });
 
       res.status(StatusCodes.CREATED);
       return res.json({
@@ -264,6 +299,71 @@ class Invitation {
     } catch (error: any) {
       Logger.error(
         "InvitationController: rejectInvitation",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      res.status(StatusCodes.BAD_REQUEST);
+      return res.json({
+        success: false,
+        error: error.message || StringValues.SOMETHING_WENT_WRONG,
+      });
+    }
+  };
+
+  public getInvitation = async (
+    req: IRequest,
+    res: IResponse,
+    next: NextFunction
+  ): Promise<any> => {
+    if (req.method !== EHttpMethod.GET) {
+      return next(
+        new ApiError(StringValues.INVALID_REQUEST_METHOD, StatusCodes.NOT_FOUND)
+      );
+    }
+
+    try {
+      const token = req.params.invToken;
+      if (!token) {
+        return next(
+          new ApiError(StringValues.TOKEN_NOT_FOUND, StatusCodes.BAD_REQUEST)
+        );
+      }
+      if (token === "null") {
+        return next(
+          new ApiError(StringValues.TOKEN_NOT_FOUND, StatusCodes.BAD_REQUEST)
+        );
+      }
+      const { invitation: invitationObj, decoded } =
+        await TokenServiceHelper.verifyToken(token);
+
+      if (!invitationObj) {
+        return next(
+          new ApiError(StringValues.INVITATION_NOT_FOUND, StatusCodes.NOT_FOUND)
+        );
+      }
+
+      if (
+        invitationObj.receiverId.toString() !== req.currentUser._id.toString()
+      ) {
+        return next(
+          new ApiError(StringValues.UNAUTHORIZED, StatusCodes.UNAUTHORIZED)
+        );
+      }
+      // const isExpired = await decoded.isExpired();
+      // if (isExpired) {
+      //   return next(
+      //     new ApiError(StringValues.TOKEN_EXPIRED, StatusCodes.UNAUTHORIZED)
+      //   );
+      // }
+
+      res.status(StatusCodes.OK);
+      return res.json({
+        success: true,
+        message: "Invitation fetch success",
+        data: invitationObj,
+      });
+    } catch (error: any) {
+      Logger.error(
+        "InvitationController: getInvitation",
         "errorInfo:" + JSON.stringify(error)
       );
       res.status(StatusCodes.BAD_REQUEST);

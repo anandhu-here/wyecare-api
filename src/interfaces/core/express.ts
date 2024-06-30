@@ -7,6 +7,7 @@ import type { IUserModel } from "../entities/user";
 export interface IRequest extends Request {
   currentUser?: IUserModel;
   token?: string;
+  invToken?: string;
 }
 
 /**

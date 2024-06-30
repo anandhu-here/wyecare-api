@@ -95,6 +95,22 @@ class UserService {
     }
   };
 
+  public getUsers = async (userType: string): Promise<IUserModel[]> => {
+    try {
+      const users = await User.find({
+        accountType: userType,
+      }).select("_id fname lname company.name company.address");
+
+      return Promise.resolve(users);
+    } catch (error) {
+      Logger.error(
+        "UserService: getUsers",
+        "errorInfo:" + JSON.stringify(error)
+      );
+      return Promise.reject(error);
+    }
+  };
+
   // Check if `User` already registered with the email
   public checkIsEmailExistsExc = async (_email: string): Promise<boolean> => {
     try {

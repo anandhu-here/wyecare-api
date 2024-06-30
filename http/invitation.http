@@ -8,7 +8,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-    "receiverId": "66760fbe532fc26625e49307"
+    "receiverId": "66760f1b532fc26625e492f6"
 }
 
 ### Get invitations

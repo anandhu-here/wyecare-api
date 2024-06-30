@@ -21,6 +21,9 @@ class LocalConfig {
 
       JWT_SECRET: process.env["JWT_SECRET"],
       JWT_EXPIRES_IN: process.env["JWT_EXPIRES_IN"],
+
+      EMAIL_USER: process.env["EMAIL_USER"],
+      EMAIL_PASS: process.env["EMAIL_PASS"],
     };
 
     for (const [key, value] of Object.entries(config)) {

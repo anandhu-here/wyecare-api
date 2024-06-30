@@ -7,6 +7,9 @@ import Http from "../middlewares/Http";
 import CORS from "../middlewares/CORS";
 import Morgan from "../middlewares/Morgan";
 import Routes from "./Routes";
+import { config } from "dotenv";
+
+config();
 
 /**
  * @name ExpressApp

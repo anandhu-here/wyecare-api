@@ -9,6 +9,8 @@ import AuthRouter from "../modules/auth/Router";
 import ShiftTypeRouter from "src/modules/shiftsType/Route";
 import ShiftRouter from "src/modules/shift/Route";
 import InvitationRouter from "src/modules/invitations/Route";
+import EmailRouter from "src/modules/email/Route";
+import TimesheetRouter from "src/modules/Timesheet/Route";
 
 class Routes {
   /**
@@ -26,6 +28,8 @@ class Routes {
     _express.use(`/${apiPrefix}/shifttype`, ShiftTypeRouter);
     _express.use(`/${apiPrefix}/shift`, ShiftRouter);
     _express.use(`/${apiPrefix}/invitations`, InvitationRouter);
+    _express.use(`/${apiPrefix}/email`, EmailRouter);
+    _express.use(`/${apiPrefix}/timesheet`, TimesheetRouter);
     // _express.use(`/${apiPrefix}/job`, JobRouter);
 
     return _express;

@@ -8,4 +8,7 @@ export interface IJoinInvitation extends Document {
   companyName: string;
   createdAt: Date;
   updatedAt: Date;
+  invToken?: string;
+  senderAccountType?: string;
+  generateToken(): Promise<string>;
 }

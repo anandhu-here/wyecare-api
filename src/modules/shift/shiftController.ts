@@ -43,7 +43,6 @@ class ShiftController {
         shifts = await this._shiftSvc.getPublishedShifts(
           currentUser._id as string
         );
-        console.log(shifts, "shifts");
       } else if (currentUser.accountType === "agency") {
         shifts = await this._shiftSvc.getShifts(currentUser._id as string);
       } else if (currentUser.accountType === "carer") {

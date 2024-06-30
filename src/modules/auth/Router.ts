@@ -131,4 +131,5 @@ AuthRouter.route("/search-users/:accountType").get(
   profileCtlr.searchUsers
 );
 
+AuthRouter.route("/users/:userType").get(profileCtlr.getUsers);
 export default AuthRouter;

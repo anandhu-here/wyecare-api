@@ -310,6 +310,38 @@ class ProfileController {
       });
     }
   };
+
+  public getUsers = async (req: IRequest, res: IResponse): Promise<any> => {
+    try {
+      const accountType = req.params.userType;
+      if (accountType === undefined || accountType === "null") {
+        return res.status(StatusCodes.OK).json({
+          success: true,
+          message: StringValues.SUCCESS,
+          data: [],
+        });
+      }
+      const users = await this._userSvc.getUsers(accountType);
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        message: StringValues.SUCCESS,
+        data: users,
+      });
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || error || StringValues.SOMETHING_WENT_WRONG;
+
+      Logger.error(
+        "UserController: getUsers",
+        "errorInfo:" + JSON.stringify(error)
+      );
+
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        error: errorMessage,
+      });
+    }
+  };
 }
 
 export default ProfileController;
