@@ -95,12 +95,16 @@ class TimesheetService {
   };
 
   public approveTimesheet = async (
-    timesheetId: string
+    timesheetId: string,
+    rating: number | null = null,
+    review: string | null = null
   ): Promise<ITimesheet | null> => {
     const updatedTimesheet = await TimesheetModel.findByIdAndUpdate(
       timesheetId,
       {
         status: "approved",
+        rating: rating !== null ? rating : null,
+        review: review !== null ? review : null,
       },
       { new: true }
     ).exec();

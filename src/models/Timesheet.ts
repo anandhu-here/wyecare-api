@@ -24,6 +24,16 @@ const TimesheetSchema = new Schema<ITimesheet>(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: null,
+    },
+    review: {
+      type: String,
+      default: null,
+    },
   },
   {
     timestamps: true,

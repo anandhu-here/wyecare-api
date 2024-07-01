@@ -6,6 +6,8 @@ export interface ITimesheet extends Document {
   carerId: ObjectId;
   homeId: ObjectId;
   status: "pending" | "approved" | "rejected";
+  rating?: number;
+  review?: string;
   createdAt: Date;
   updatedAt: Date;
 }

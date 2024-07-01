@@ -78,8 +78,12 @@ class TimesheetController {
   ): Promise<void> => {
     try {
       const { timesheetId } = req.params;
+      const { rating, review } = req.body;
+
       const updatedTimesheet = await this._timesheetService.approveTimesheet(
-        timesheetId
+        timesheetId,
+        rating,
+        review
       );
 
       if (!updatedTimesheet) {
