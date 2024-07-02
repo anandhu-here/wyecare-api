@@ -13,11 +13,13 @@ import type UserService from "../../services/UserService";
 import Validators from "../../utils/validator";
 import { EHttpMethod } from "../../enums";
 import type ShiftService from "src/services/ShiftService";
-import { type ObjectId } from "mongoose";
+import { Types, type ObjectId } from "mongoose";
+import TimelineService from "src/services/TimelineService";
 
 class RegisterController {
   private readonly _userSvc: UserService;
   private readonly _profileSvc: ProfileService;
+  private readonly _timeliineSvc: TimelineService;
 
   constructor(
     readonly userSvc: UserService,
@@ -26,6 +28,7 @@ class RegisterController {
   ) {
     this._userSvc = userSvc;
     this._profileSvc = profileSvc;
+    this._timeliineSvc = new TimelineService();
   }
 
   /**
@@ -364,7 +367,7 @@ class RegisterController {
       const _currentDateTime = new Date(Date.now());
 
       // Create User
-      const newUserData: IUser = {
+      const newUserData: Partial<IUser> = {
         fname: _fname,
         lname: _lname,
         nameChangedAt: _currentDateTime,
@@ -521,6 +524,16 @@ class RegisterController {
         linkedUserType
       );
 
+      if (currentUser.accountType === "carer" && linkedUserType === "agency") {
+        const response = await this._timeliineSvc.addAgencyToTimeline(
+          currentUser._id as Types.ObjectId,
+          linkedUserId,
+          new Date(),
+          ""
+        );
+        console.log("response", response);
+      }
+
       if (!currentUserUpdated) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           success: false,
@@ -580,6 +593,12 @@ class RegisterController {
           success: false,
           message: "Linked user type and ID are required",
         });
+      }
+
+      if (currentUser.accountType === "agency" && linkedUserType === "carer") {
+        const response = await this._timeliineSvc.removeCurrentAgency(
+          linkedUserId
+        );
       }
 
       const updatedUser = await this._userSvc.removeLinkedUser(

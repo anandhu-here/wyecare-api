@@ -1,6 +1,9 @@
 
-@homeToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzYwZmJlNTMyZmMyNjYyNWU0OTMwNyIsImlhdCI6MTcxOTAxMzMxMCwiZXhwIjoxNzI2Nzg5MzEwfQ.028jxNHQAgsoqPvBMiOMD68O9Sy-GKJCOIseCD67OuY
+@homeToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODMzOWU2Y2VjMDIyMDlkY2VkYzQ5ZCIsImlhdCI6MTcxOTg3NjA3MCwiZXhwIjoxNzI3NjUyMDcwfQ.JDtE1N7sLC8MSoEA2SEV3vpM0plDY7mHogJE5kORHsY
 @agencyToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODBhNTUzNjJmZmNhOTg5ZjE4ZGU0ZCIsImlhdCI6MTcxOTcwNjk2MywiZXhwIjoxNzI3NDgyOTYzfQ.ZbJC9WLTMk2WS_SKKc-TrbYeCGoTlCyqfUDpMcCAkyE
+
+@carerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODMzZGVhOTRmYjE5MmRiYjg5NDQzNiIsImlhdCI6MTcxOTg3NzA5OCwiZXhwIjoxNzI3NjUzMDk4fQ.1lSq6PaE-pnF73GskTLgxUYfq_UMcTwpDz0bm53yU8M
+
 
 
 ### 
@@ -11,6 +14,35 @@ Content-Type: application/json
 {
     "email": "anandhu@circadacare.com",
     "password": "testing@123"
+}
+
+###
+
+POST http://localhost:4000/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "fname": "test",
+    "lname": "Name",
+    "email": "anandhusathe@gmail.com",
+    "password": "testing@123",
+    "confirmPassword": "testing@123",
+    "accountType": "carer",
+    "company":{
+        "name": "My Home",
+        "address": "My Address"
+    }
+
+}
+###
+
+PATCH http://localhost:4000/api/v1/auth/link 
+Content-Type: application/json
+Authorization: Bearer {{carerToken}}
+
+{
+    "linkedUserId": "6683397ccec02209dcedc490",
+    "linkedUserType": "agency"
 }
 
 ###
@@ -36,16 +68,7 @@ Authorization: Bearer {{agencyToken}}
 
 GET https://fc7e-82-44-21-31.ngrok-free.app/api/v1/auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzYwZGRlMTQ3NTg1MWRmMjA4NGIyNiIsImlhdCI6MTcxOTAxMjgzMCwiZXhwIjoxNzI2Nzg4ODMwfQ.4Fvx5Z3ZH_ViqAs2SIDxLCFsj9zobQA64T5DL5pDyH8
-###
 
-PATCH http://localhost:4000/api/v1/auth/link 
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NmI2ZWQ3MDIzMDhhMWJmZjI1NTZlYyIsImlhdCI6MTcxODMxNjc1OSwiZXhwIjoxNzI2MDkyNzU5fQ.ynP2PBwX3zOMKWeV_A9i5n4P-tueV9QEkqCFzWT_sDQ
-
-{
-    "linkedUserId": "666b6f4c02308a1bff2556fb",
-    "linkedUserType": "home"
-}
 
 ###
 
@@ -58,20 +81,6 @@ Authorization: Bearer {{agencyToken}}
     "linkedUserType": "home"
 }
 
-###
-
-POST http://localhost:4000/api/v1/auth/register
-Content-Type: application/json
-
-{
-    "fname": "Marshal",
-    "lname": "Sebastian",
-    "email": "marshal@gmail.com",
-    "password": "testing@123",
-    "confirmPassword": "testing@123",
-    "accountType": "agency",
-
-}
     
 ###
 

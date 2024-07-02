@@ -1,4 +1,5 @@
 import { Document, ObjectId, type Types } from "mongoose";
+import { ITimesheet } from "./timesheet";
 
 export interface IShift extends Document {
   agentId: ObjectId;
@@ -14,6 +15,7 @@ export interface IShift extends Document {
   signedCarers?: {
     [carerId: string]: string;
   };
+  timesheet?: ITimesheet;
   createdAt?: Date;
   updatedAt?: Date;
 }

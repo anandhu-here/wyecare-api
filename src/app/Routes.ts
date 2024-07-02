@@ -11,6 +11,7 @@ import ShiftRouter from "src/modules/shift/Route";
 import InvitationRouter from "src/modules/invitations/Route";
 import EmailRouter from "src/modules/email/Route";
 import TimesheetRouter from "src/modules/Timesheet/Route";
+import TimelineRouter from "src/modules/Timeline/Route";
 
 class Routes {
   /**
@@ -30,6 +31,7 @@ class Routes {
     _express.use(`/${apiPrefix}/invitations`, InvitationRouter);
     _express.use(`/${apiPrefix}/email`, EmailRouter);
     _express.use(`/${apiPrefix}/timesheet`, TimesheetRouter);
+    _express.use(`/${apiPrefix}/timeline`, TimelineRouter);
     // _express.use(`/${apiPrefix}/job`, JobRouter);
 
     return _express;

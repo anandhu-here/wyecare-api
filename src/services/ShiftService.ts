@@ -6,6 +6,9 @@ import StatusCodes from "src/constants/statusCodes";
 import CustomError from "src/helpers/ErrorHelper";
 import NodeRSA from "node-rsa";
 import QRCode from "qrcode";
+import TimesheetModel from "src/models/Timesheet";
+import { ITimesheet } from "src/interfaces/entities/timesheet";
+import Logger from "src/logger";
 
 class ShiftService {
   public getPublishedShifts = async (
@@ -32,7 +35,7 @@ class ShiftService {
 
   public getAssignedShifts = async (
     userId: string | Types.ObjectId
-  ): Promise<IShift[]> => {
+  ): Promise<any> => {
     try {
       const shifts = await ShiftModel.find({
         assignedUsers: new Types.ObjectId(userId),
@@ -49,9 +52,22 @@ class ShiftService {
         .populate({
           path: "agentId",
           select: "_id company",
+        })
+        .exec();
+
+      const shiftPromises = shifts.map(async (shift) => {
+        const timesheet = await TimesheetModel.findOne({
+          shiftId: shift._id,
+          carerId: userId,
         });
-      return shifts;
+        return { ...shift.toObject(), timesheet: timesheet || null };
+      });
+
+      Logger.info("Shifts:", shiftPromises);
+
+      return await Promise.all(shiftPromises);
     } catch (error) {
+      console.error("Error getting shifts by assigned user:", error);
       throw new Error(`Failed to get shifts by assigned user`);
     }
   };

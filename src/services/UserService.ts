@@ -9,7 +9,7 @@ import User from "../models/User";
 
 class UserService {
   // Create an `User`
-  public createUserExc = async (_user: IUser): Promise<IUserModel> => {
+  public createUserExc = async (_user: Partial<IUser>): Promise<IUserModel> => {
     try {
       const user = await User.create(_user);
 
