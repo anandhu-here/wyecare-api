@@ -32,10 +32,9 @@ class TimelineService {
     }
 
     const [currentAgencyItem] = timeline.timeline;
-    const { fname, lname, company, _id } = timeline.currentAgency;
+    const { fname, lname, company, _id } = timeline.currentAgency as any;
 
     return {
-      _id,
       fname,
       lname,
       company,
@@ -71,10 +70,10 @@ class TimelineService {
 
     return timeline.timeline
       .filter(
-        (item) =>
-          item.agencyId._id.toString() !== timeline.currentAgency?.toString()
+        (item: any) =>
+          item.agencyId._id?.toString() !== timeline.currentAgency?.toString()
       )
-      .map((item) => ({
+      .map((item: any) => ({
         _id: item.agencyId._id,
         fname: item.agencyId.fname,
         lname: item.agencyId.lname,
