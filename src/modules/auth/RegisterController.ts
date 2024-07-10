@@ -236,6 +236,8 @@ class RegisterController {
       );
     }
 
+    console.log("RegisterController: register", req.body);
+
     try {
       const {
         fname,
@@ -440,6 +442,7 @@ class RegisterController {
         },
       });
     } catch (error: any) {
+      console.log(error, "\rrrr");
       const errorMessage =
         error?.message || error || StringValues.SOMETHING_WENT_WRONG;
 

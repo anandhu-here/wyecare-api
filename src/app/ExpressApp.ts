@@ -8,6 +8,8 @@ import CORS from "../middlewares/CORS";
 import Morgan from "../middlewares/Morgan";
 import Routes from "./Routes";
 import { config } from "dotenv";
+import fileUpload from "express-fileupload";
+import admin, { credential } from "firebase-admin";
 
 config();
 
@@ -33,6 +35,13 @@ class ExpressApp {
     this.registerHandlers();
 
     Logger.info("App :: Initialized");
+    admin.initializeApp({
+      credential: admin.credential.cert(require("./serviceAccount.json")),
+      storageBucket: LocalConfig.getConfig().BUCKET_NAME,
+    });
+
+    Logger.info("App :: Firebase Admin Initialized");
+    console.log("Bucket name: ", LocalConfig.getConfig().BUCKET_NAME);
   }
 
   /**
@@ -70,7 +79,8 @@ class ExpressApp {
    */
   private registerHandlers(): void {
     Logger.info("App :: Registering handlers...");
-
+    // File upload
+    this.express.use(fileUpload());
     // Registering Exception / Error Handlers
     this.express.use(ExceptionHandler.logErrors);
     this.express.use(ExceptionHandler.clientErrorHandler);

@@ -1,15 +1,15 @@
 import type { NextFunction, Request, Response } from "express";
 import type { IUserModel } from "../entities/user";
+import { UploadedFile } from "express-fileupload";
 
-/**
- * Define custom Express's Request interface
- */
 export interface IRequest extends Request {
   currentUser?: IUserModel;
   token?: string;
   invToken?: string;
+  files?: {
+    [key: string]: UploadedFile;
+  };
 }
-
 /**
  * Define custom Express's Response interface
  */

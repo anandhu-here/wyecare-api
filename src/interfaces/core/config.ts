@@ -27,6 +27,7 @@ export interface IEnvConfig {
 
   EMAIL_USER: string | undefined;
   EMAIL_PASS: string | undefined;
+  BUCKET_NAME: string | undefined;
 }
 
 /**

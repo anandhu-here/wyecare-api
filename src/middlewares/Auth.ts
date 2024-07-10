@@ -10,6 +10,7 @@ import User from "../models/User";
 import TokenServiceHelper from "../helpers/TokenServiceHelper";
 import { registerValidator } from "src/validators/register";
 import type { NextFunction } from "express";
+import Logger from "src/logger";
 
 class AuthMiddleware {
   /**
@@ -93,7 +94,9 @@ class AuthMiddleware {
   ): Promise<any> {
     try {
       const { error } = registerValidator.validate(req.body);
+      Logger.info("validateRegistration", error);
       if (error) {
+        console.log(error, "acsdchsdchhhhhhh");
         return res.status(400).json({ error: error.details[0].message });
       }
 

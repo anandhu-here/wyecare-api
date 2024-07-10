@@ -24,6 +24,7 @@ class LocalConfig {
 
       EMAIL_USER: process.env["EMAIL_USER"],
       EMAIL_PASS: process.env["EMAIL_PASS"],
+      BUCKET_NAME: process.env["BUCKET_NAME"],
     };
 
     for (const [key, value] of Object.entries(config)) {
