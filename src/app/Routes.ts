@@ -13,6 +13,7 @@ import EmailRouter from "src/modules/email/Route";
 import TimesheetRouter from "src/modules/Timesheet/Route";
 import TimelineRouter from "src/modules/Timeline/Route";
 import CarerDocumentRouter from "src/modules/CarerDoc/Route";
+import ResidentRouter from "src/modules/Resident/Route";
 
 class Routes {
   /**
@@ -34,6 +35,7 @@ class Routes {
     _express.use(`/${apiPrefix}/timesheet`, TimesheetRouter);
     _express.use(`/${apiPrefix}/timeline`, TimelineRouter);
     _express.use(`/${apiPrefix}/carer-documents`, CarerDocumentRouter);
+    _express.use(`/${apiPrefix}/residents`, ResidentRouter);
     // _express.use(`/${apiPrefix}/job`, JobRouter);
 
     return _express;

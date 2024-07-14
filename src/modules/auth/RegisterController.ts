@@ -431,15 +431,17 @@ class RegisterController {
 
       await this._profileSvc.getProfileExc(newUser);
       const authToken = await newUser.getToken();
+      const resData = {
+        token: authToken.token,
+        expiresAt: authToken.expiresAt,
+        user: newUser,
+      };
 
       res.status(StatusCodes.CREATED);
       return res.json({
         success: true,
         message: StringValues.SUCCESS,
-        data: {
-          token: authToken.token,
-          expiresAt: authToken.expiresAt,
-        },
+        data: resData,
       });
     } catch (error: any) {
       console.log(error, "\rrrr");

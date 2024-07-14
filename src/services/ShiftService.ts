@@ -142,8 +142,6 @@ class ShiftService {
   ): Promise<IShift[]> => {
     const createdShifts: IShift[] = [];
 
-    console.log(JSON.stringify(shiftsData));
-
     for (const shiftData of shiftsData) {
       const shiftType = shiftTypes.find((type) => {
         let shiftTypestr = type._id.toString();
@@ -151,10 +149,18 @@ class ShiftService {
       });
 
       if (shiftType) {
+        let assignedUsers = shiftData.assignedUsers || [];
+        let objectifiedAssignedUsers = assignedUsers.map((userId) => {
+          return new Types.ObjectId(userId);
+        });
         const newShift = await ShiftModel.create({
           ...shiftData,
           shiftType,
           homeId,
+          isAccepted: objectifiedAssignedUsers.length > 0,
+          agentId:
+            shiftData.agentId === "internal" ? undefined : shiftData.agentId,
+          assignedUsers: objectifiedAssignedUsers || [],
         });
         createdShifts.push(newShift);
       }

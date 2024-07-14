@@ -2,7 +2,7 @@ import { Document, ObjectId, type Types } from "mongoose";
 import { ITimesheet } from "./timesheet";
 
 export interface IShift extends Document {
-  agentId: ObjectId;
+  agentId?: ObjectId | string;
   homeId: ObjectId;
   isAccepted: boolean;
   isRejected: boolean;
