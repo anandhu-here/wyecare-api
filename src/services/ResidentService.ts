@@ -1,6 +1,6 @@
-import Resident from "../models/Resident";
-import { IResident, IPersonalCare } from "../interfaces/entities/resident";
-import { Types } from "mongoose";
+// src/services/ResidentService.ts
+
+import Resident, { IResident } from "../models/Resident";
 
 class ResidentService {
   public async createResident(
@@ -15,107 +15,45 @@ class ResidentService {
     }
   }
 
-  public async getResidents(filters: any = {}): Promise<IResident[]> {
-    try {
-      return await Resident.find(filters);
-    } catch (error: any) {
-      throw new Error(`Failed to get residents: ${error.message}`);
-    }
-  }
-
-  public async getResident(residentId: string): Promise<IResident | null> {
-    try {
-      return await Resident.findById(residentId);
-    } catch (error: any) {
-      throw new Error(`Failed to get resident: ${error.message}`);
-    }
-  }
-
   public async updateResident(
     residentId: string,
     updateData: Partial<IResident>
   ): Promise<IResident | null> {
     try {
-      return await Resident.findByIdAndUpdate(residentId, updateData, {
-        new: true,
-      });
+      console.log(updateData, "updateData");
+      const updatedResident = await Resident.findByIdAndUpdate(
+        residentId,
+        updateData,
+        { new: true, runValidators: true }
+      );
+      if (!updatedResident) {
+        throw new Error("Resident not found");
+      }
+      return updatedResident;
     } catch (error: any) {
       throw new Error(`Failed to update resident: ${error.message}`);
     }
   }
 
-  public async deleteResident(residentId: string): Promise<void> {
+  public async getResident(residentId: string): Promise<IResident | null> {
     try {
-      await Resident.findByIdAndDelete(residentId);
+      const resident = await Resident.findById(residentId);
+      if (!resident) {
+        throw new Error("Resident not found");
+      }
+      return resident;
     } catch (error: any) {
-      throw new Error(`Failed to delete resident: ${error.message}`);
+      throw new Error(`Failed to get resident: ${error.message}`);
     }
   }
 
-  public async addCareTimelineEntry(
-    residentId: string,
-    carerId: string,
-    careType: string,
-    details: any
-  ): Promise<IResident | null> {
+  public async getResidents(homeId: string): Promise<IResident[]> {
     try {
-      return await Resident.findByIdAndUpdate(
-        residentId,
-        {
-          $push: {
-            careTimeline: {
-              carerId: new Types.ObjectId(carerId),
-              careType,
-              details,
-              time: new Date(),
-            },
-          },
-        },
-        { new: true }
-      );
+      console.log(homeId, "hhhh");
+      return await Resident.find({ homeId });
     } catch (error: any) {
-      throw new Error(`Failed to add care timeline entry: ${error.message}`);
-    }
-  }
-
-  public async addMedicationTimelineEntry(
-    residentId: string,
-    medicationId: string,
-    nurseId: string
-  ): Promise<IResident | null> {
-    try {
-      return await Resident.findByIdAndUpdate(
-        residentId,
-        {
-          $push: {
-            medicationsTimeline: {
-              medicationId: new Types.ObjectId(medicationId),
-              nurseId: new Types.ObjectId(nurseId),
-              time: new Date(),
-            },
-          },
-        },
-        { new: true }
-      );
-    } catch (error: any) {
-      throw new Error(
-        `Failed to add medication timeline entry: ${error.message}`
-      );
-    }
-  }
-
-  public async updatePersonalCare(
-    residentId: string,
-    personalCare: IPersonalCare
-  ): Promise<IResident | null> {
-    try {
-      return await Resident.findByIdAndUpdate(
-        residentId,
-        { personalCare },
-        { new: true }
-      );
-    } catch (error: any) {
-      throw new Error(`Failed to update personal care: ${error.message}`);
+      console.log(error, "eror");
+      throw new Error(`Failed to get residents: ${error.message}`);
     }
   }
 }

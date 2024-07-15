@@ -1,17 +1,25 @@
 import App from "./app";
 import Logger from "./logger";
-require("dotenv").config();
+import functions from "firebase-functions";
 
-const main = (): void => {
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const main = () => {
   // Run the Server
   Logger.info("App :: Starting...");
 
   const app = new App();
 
   app._init();
+
+  return app;
 };
 
 /**
  * Booting MainApp
  */
-main();
+const app = main();
+
+export const api = functions.https.onRequest(app.getExpressApp());

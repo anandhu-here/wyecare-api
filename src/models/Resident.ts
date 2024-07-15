@@ -1,48 +1,65 @@
-import mongoose, { Schema } from "mongoose";
-import { IResident } from "src/interfaces/entities/resident";
+// src/models/Resident.ts
 
-const PersonalCareItemSchema = new Schema({
+import mongoose, { Schema, Document } from "mongoose";
+
+const MedicationSchema = new Schema({
+  type: String,
   frequency: {
-    times: { type: Number, required: true },
-    per: { type: String, enum: ["day", "week"], required: true },
+    times: Number,
+    per: {
+      type: String,
+      enum: ["day", "week"],
+    },
   },
+  label: String,
+  medicineName: String,
+  timings: [String],
 });
 
-const MealCareItemSchema = new Schema({
+const PersonalCareItemSchema = new mongoose.Schema({
   frequency: {
-    times: { type: Number, required: true },
-    per: { type: String, enum: ["day", "week"], required: true },
+    times: Number,
+    per: {
+      type: String,
+      enum: ["day", "week"],
+    },
   },
-  defaultTime: { type: String, required: true }, // HH:mm format
+  timings: [
+    {
+      type: mongoose.Schema.Types.Mixed,
+      validate: {
+        validator: function (v) {
+          return (
+            typeof v === "string" || (typeof v === "object" && v.day && v.time)
+          );
+        },
+        message: (props) => `${props.value} is not a valid timing!`,
+      },
+    },
+  ],
 });
 
-const PersonalCareSchema = new Schema({
+const MealCareItemSchema = new mongoose.Schema({
+  frequency: {
+    times: Number,
+    per: {
+      type: String,
+      enum: ["day", "week"],
+    },
+  },
+  defaultTime: String,
+});
+
+const PersonalCareSchema = new mongoose.Schema({
   shower: PersonalCareItemSchema,
   bath: PersonalCareItemSchema,
   breakfast: MealCareItemSchema,
   lunch: MealCareItemSchema,
   dinner: MealCareItemSchema,
-  snacks: PersonalCareItemSchema,
+  snacks: MealCareItemSchema,
   padCheck: PersonalCareItemSchema,
   fluidIntake: PersonalCareItemSchema,
   sleep: PersonalCareItemSchema,
-});
-
-const CareTimelineEntrySchema = new Schema({
-  carerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  careType: { type: String, required: true },
-  details: { type: Schema.Types.Mixed, required: true },
-  time: { type: Date, default: Date.now },
-});
-
-const MedicationTimelineEntrySchema = new Schema({
-  medicationId: {
-    type: Schema.Types.ObjectId,
-    ref: "Medication",
-    required: true,
-  },
-  nurseId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  time: { type: Date, default: Date.now },
 });
 
 const ResidentSchema = new Schema(
@@ -51,13 +68,45 @@ const ResidentSchema = new Schema(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     roomNumber: { type: String, required: true },
-    profilePictureUrl: { type: String },
-    type: { type: String, required: true },
-    careTimeline: [CareTimelineEntrySchema],
-    medicationsTimeline: [MedicationTimelineEntrySchema],
+    profilePictureUrl: String,
+    type: {
+      type: String,
+      enum: ["Permanent", "Temporary", "Respite"],
+      required: true,
+    },
+    medications: [MedicationSchema],
     personalCare: PersonalCareSchema,
   },
   { timestamps: true }
 );
+
+export interface IResident extends Document {
+  homeId: mongoose.Types.ObjectId;
+  firstName: string;
+  lastName: string;
+  roomNumber: string;
+  profilePictureUrl?: string;
+  type: "Permanent" | "Temporary" | "Respite";
+  medications: Array<{
+    type: string;
+    frequency: {
+      times: number;
+      per: "day" | "week";
+    };
+    label: string;
+    medicineName: string;
+    timings: string[];
+  }>;
+  personalCare: {
+    [key: string]: {
+      frequency: {
+        times: number;
+        per: "day" | "week";
+      };
+      timings?: string[];
+      defaultTime?: string;
+    };
+  };
+}
 
 export default mongoose.model<IResident>("Resident", ResidentSchema);

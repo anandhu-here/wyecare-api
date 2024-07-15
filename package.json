@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "author": "Anandhu Satheesh",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "type": "commonjs",
   "scripts": {
     "dev": "env-cmd -f .env.local bun --hot src/index.ts",
-    "start": "bun dist/index.js",
+    "deploy": "firebase deploy --only functions:api",
+    "start": "env-cmd -f .env bun dist/index.js",
     "clean": "rimraf -rf dist",
-    "build": "bun run clean && tsc",
+    "build": "tsc",
     "ts:check": "tsc --project tsconfig.json",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --fix --ext .ts",
@@ -52,6 +53,7 @@
     "express-fileupload": "^1.5.0",
     "firebase": "^10.12.3",
     "firebase-admin": "^12.2.0",
+    "firebase-functions": "^5.0.1",
     "helmet": "^7.1.0",
     "http-status-codes": "^2.3.0",
     "joi": "^17.13.1",
@@ -71,7 +73,7 @@
     "typescript": "^5.4.5"
   },
   "engines": {
-    "node": "20.x",
+    "node": "18",
     "bun": "1.1.x"
   }
 }

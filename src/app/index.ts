@@ -22,6 +22,10 @@ class App {
       Logger.error("App :: Database could't initialized");
     }
   };
+
+  public getExpressApp = () => {
+    return ExpressApp.getApp();
+  };
 }
 
 export default App;

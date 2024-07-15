@@ -116,6 +116,10 @@ class ExpressApp {
       });
   }
 
+  public getApp(): Application {
+    return this.express;
+  }
+
   /**
    * Close the express server
    */
