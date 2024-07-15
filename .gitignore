@@ -42,7 +42,7 @@ serviceAccount.json
 # temp directory
 .temp
 .tmp
-
+.env
 # Runtime data
 pids
 *.pid

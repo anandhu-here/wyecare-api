@@ -20,6 +20,4 @@ const main = () => {
 /**
  * Booting MainApp
  */
-const app = main();
-
-export const api = functions.https.onRequest(app.getExpressApp());
+export const app = main();

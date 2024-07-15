@@ -6,7 +6,7 @@
   "main": "dist/src/index.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "env-cmd -f .env.local bun --hot src/index.ts",
+    "dev": "env-cmd -f .env bun --hot src/index.ts",
     "deploy": "firebase deploy --only functions:api",
     "start": "env-cmd -f .env bun dist/index.js",
     "clean": "rimraf -rf dist",
