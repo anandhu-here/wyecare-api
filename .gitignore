@@ -3,7 +3,9 @@
 /node_modules
 /build
 /src-old
-
+.env
+.env.local
+.env.*
 # Logs
 logs
 *.log
@@ -42,7 +44,7 @@ serviceAccount.json
 # temp directory
 .temp
 .tmp
-.env
+
 # Runtime data
 pids
 *.pid
