@@ -1,0 +1,30 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Auth_1 = __importDefault(require("src/middlewares/Auth"));
+const invitationController_1 = __importDefault(require("./invitationController"));
+const InvitationService_1 = __importDefault(require("src/services/InvitationService"));
+const UserService_1 = __importDefault(require("src/services/UserService"));
+const homeStaffInvitationController_1 = __importDefault(require("./homeStaffInvitationController"));
+const homeStaffInvitationService_1 = __importDefault(require("src/services/homeStaffInvitationService"));
+const InvitationRouter = (0, express_1.Router)();
+const _invSvc = new InvitationService_1.default();
+const _homeStaffInvSvc = new homeStaffInvitationService_1.default();
+const _userSvc = new UserService_1.default();
+const _invController = new invitationController_1.default(_invSvc, _userSvc);
+const _homeStaffInvController = new homeStaffInvitationController_1.default(_homeStaffInvSvc, _userSvc);
+InvitationRouter.route("/").post(Auth_1.default.isAuthenticatedUser, _invController.sendInvitation);
+InvitationRouter.route("/").get(Auth_1.default.isAuthenticatedUser, _invController.getInvitations);
+InvitationRouter.route('/token/:invToken').get(Auth_1.default.isAuthenticatedUser, _invController.getInvitation);
+InvitationRouter.route("/accept/:invitationId").put(Auth_1.default.isAuthenticatedUser, _invController.acceptInvitation);
+InvitationRouter.route("/reject/:invitationId").put(Auth_1.default.isAuthenticatedUser, _invController.rejectInvitation);
+InvitationRouter.route("/:invitationId").delete(Auth_1.default.isAuthenticatedUser, _invController.cancelInvitation);
+InvitationRouter.route("/home-staff").post(Auth_1.default.isAuthenticatedUser, _homeStaffInvController.sendInvitation);
+InvitationRouter.route("/home-staff").get(Auth_1.default.isAuthenticatedUser, _homeStaffInvController.getInvitations);
+InvitationRouter.route('/home-staff/token/:token').get(_homeStaffInvController.getInvitationByToken);
+InvitationRouter.route("/home-staff/:invitationId").put(Auth_1.default.isAuthenticatedUser, _homeStaffInvController.updateInvitationStatus);
+exports.default = InvitationRouter;
+//# sourceMappingURL=Route.js.map
