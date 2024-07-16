@@ -20,7 +20,6 @@ class ResidentService {
     updateData: Partial<IResident>
   ): Promise<IResident | null> {
     try {
-      console.log(updateData, "updateData");
       const updatedResident = await Resident.findByIdAndUpdate(
         residentId,
         updateData,

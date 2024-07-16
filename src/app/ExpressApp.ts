@@ -49,7 +49,7 @@ class ExpressApp {
     };
 
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert(serviceAccount as any),
       storageBucket: LocalConfig.getConfig().BUCKET_NAME,
     });
 
