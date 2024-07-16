@@ -28,7 +28,6 @@ class LocalConfig {
     };
 
     for (const [key, value] of Object.entries(config)) {
-      console.log(key, value, "key, value");
       if (value === undefined) {
         throw new Error(`Missing key ${key} in Environmental variables`);
       }
