@@ -39,7 +39,7 @@ class ExpressApp {
       type: process.env.type,
       project_id: process.env.project_id,
       private_key_id: process.env.private_key_id,
-      private_key: process.env.private_key.replace(/\\n/g, "\n"),
+      private_key: process.env.private_key?.replace(/\\n/g, "\n"),
       client_email: process.env.client_email,
       client_id: process.env.client_id,
       auth_uri: process.env.auth_uri,
@@ -48,10 +48,10 @@ class ExpressApp {
       client_x509_cert_url: process.env.client_x509_cert_url,
     };
 
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount as any),
-      storageBucket: LocalConfig.getConfig().BUCKET_NAME,
-    });
+    // admin.initializeApp({
+    //   credential: admin.credential.cert(require("./serviceAccount.json")),
+    //   storageBucket: LocalConfig.getConfig().BUCKET_NAME,
+    // });
 
     Logger.info("App :: Firebase Admin Initialized");
     console.log("Bucket name: ", LocalConfig.getConfig().BUCKET_NAME);

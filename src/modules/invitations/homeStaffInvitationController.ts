@@ -10,7 +10,7 @@ import EmailServices from "src/services/EmailService";
 import UserService from "src/services/UserService";
 import TokenServiceHelper from "src/helpers/InvTokenHelper";
 import HomeStaffInvitationService from "src/services/homeStaffInvitationService";
-import { getHomeStaffInvitationTemplate } from "../email/templates/toHomeStaffs";
+import { getGeneralInvitationTemplate } from "../email/templates/toHomeStaffs";
 
 class HomeStaffInvitation {
   private readonly _invitationSvc: HomeStaffInvitationService;
@@ -89,7 +89,7 @@ class HomeStaffInvitation {
         req.currentUser.accountType
       );
 
-      const template = getHomeStaffInvitationTemplate(
+      let template = getGeneralInvitationTemplate(
         `http://localhost:3000?token=${invitation.invToken}&company=${companyName}`,
         companyName
       );

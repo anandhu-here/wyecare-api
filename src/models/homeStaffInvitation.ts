@@ -8,7 +8,7 @@ const HomeStaffInvitationSchema = new Schema<IHomeStaffINvitiation>(
     receiverId: { type: String, required: true }, // Email address
     accountType: {
       type: String,
-      enum: ["carer", "senior carer", "nurse", "guest"],
+      enum: ["carer", "senior carer", "nurse", "guest", "agency"],
     },
     status: {
       type: String,

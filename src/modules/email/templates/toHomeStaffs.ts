@@ -1,4 +1,4 @@
-export const getHomeStaffInvitationTemplate = (
+export const getGeneralInvitationTemplate = (
   link: string,
   companyName: string
 ) => {
@@ -6,7 +6,7 @@ export const getHomeStaffInvitationTemplate = (
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Invitation to Join Our Care Home Staff</title>
+  <title>Invitation to Join ${companyName}</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,24 +36,24 @@ export const getHomeStaffInvitationTemplate = (
 </head>
 <body>
   <div class="container">
-    <h2>Invitation to Join Our Care Home Staff</h2>
-    <p>Dear Care Professional,</p>
-    <p>We are excited to invite you to join the staff at ${companyName}. As a respected care home in the community, we are always looking for dedicated professionals to join our team and help us provide exceptional care to our residents.</p>
-    <p>By joining our care home staff, you will enjoy:</p>
+    <h2>Invitation to Join ${companyName}</h2>
+    <p>Dear Invitee,</p>
+    <p>We are excited to invite you to join ${companyName}. Our platform is designed to connect professionals and organizations, fostering collaboration and growth in our community.</p>
+    <p>By accepting this invitation, you'll gain access to:</p>
     <ul>
-      <li>A supportive and collaborative work environment</li>
-      <li>Opportunities for professional growth and development</li>
-      <li>Competitive salary and benefits</li>
-      <li>The chance to make a real difference in the lives of our residents</li>
+      <li>A network of professionals and organizations in your field</li>
+      <li>Opportunities for collaboration and partnership</li>
+      <li>Valuable resources and tools to support your work</li>
+      <li>Updates on industry trends and best practices</li>
     </ul>
-    <p>To accept this invitation and learn more about the position, please click the button below:</p>
+    <p>To accept this invitation and set up your account, please click the button below:</p>
     <a href="${link}" target="_blank">
       <button class="button">Accept Invitation</button>
     </a>
-    <p>We believe that your skills and experience would be a valuable addition to our team, and we look forward to the possibility of working together to provide the highest quality of care for our residents.</p>
-    <p>If you have any questions about this opportunity or would like more information, please don't hesitate to contact us.</p>
+    <p>We believe that your participation will add significant value to our community, and we look forward to the possibility of collaborating with you.</p>
+    <p>If you have any questions about this invitation or would like more information, please don't hesitate to contact us.</p>
     <p>Best regards,</p>
-    <p>${companyName} Management Team</p>
+    <p>The ${companyName} Team</p>
   </div>
 </body>
 </html>`;
